@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/trip.iml" filepath="$PROJECT_DIR$/trip.iml" />
+      <module fileurl="file://D://trip/trip.iml" filepath="D://trip/trip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trip-admin/trip-admin.iml" filepath="$PROJECT_DIR$/trip-admin/trip-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trip-common/trip-common.iml" filepath="$PROJECT_DIR$/trip-common/trip-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trip-mybatis/trip-mybatis.iml" filepath="$PROJECT_DIR$/trip-mybatis/trip-mybatis.iml" />
+    </modules>
+  </component>
+</project>
