@@ -15,11 +15,10 @@
     <title>轻松出行</title>
 
     <jsp:include page="${ctx}/common/head.jsp"></jsp:include>
-    <jsp:include page="${ctx}/common/info.jsp"></jsp:include>
 
 </head>
 <body style="background-color: #E4B89B">
-
+    <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
     <div class="container" style="margin: auto;max-width: 340px;min-height:450px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
         <h1>Welcome!</h1>
     </div>

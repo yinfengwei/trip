@@ -21,27 +21,25 @@
 <body style="background-color: #E4B89B">
 
 <div class="container" style="margin: auto;max-width: 340px;">
-
+    <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
     <form role="form" style="margin-top: 60px;" method="post" action="${ctx}/trip-admin/update">
 
-        <input name="userName" id="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" value="">
+        <input name="userName" id="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required>
         <br>
-        <input name="phone" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="手机号码">
+        <input name="phone" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="手机号码" required>
         <br>
         <button type="button" class="btn btn-primary" onclick="getQuestion()" >获取密保问题</button>
         <label id="question" class="form-control" style="font-size: 18px;"hidden></label>
         <br>
-        <input name="answer" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="密保答案">
+        <input name="answer" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="密保答案" required>
         <br>
-        <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="新密码">
+        <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="新密码" required>
         <br>
-        <p id="error-tip" class="help-block red" style="height:15px">${error}</p>
         <button type="submit" value="提交" class="btn btn-primary btn-block btn-lg"style="font-size: 22px;text-align: center;">更新信息</button>
     </form>
 </div>
 
 </body>
-<jsp:include page="${ctx}/common/info.jsp"></jsp:include>
 <script>
 
     function getQuestion() {

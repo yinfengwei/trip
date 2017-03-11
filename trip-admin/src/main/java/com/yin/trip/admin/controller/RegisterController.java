@@ -2,6 +2,8 @@ package com.yin.trip.admin.controller;
 
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class RegisterController {
+
     @Autowired
     private UserService userService;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @RequestMapping("/register")
-    public String page(@ModelAttribute("error") String error, ModelMap map){
+    public String page(String error, String info, ModelMap map){
         map.addAttribute("error", error);
+        map.addAttribute("info", info);
         return "register";
     }
 
@@ -28,11 +34,15 @@ public class RegisterController {
 
         //插入成功
         if (userService.insertUser(user)) {
-            map.addAttribute("info","注册成功");
-            return "/login";
+            logger.info("用户注册成功");
+
+            map.addAttribute("info", "注册成功");
+            return "login";
         } else {
-            map.addAttribute("error","注册失败");
-            return "/register";
+            logger.warn("用户注册失败");
+
+            map.put("error","注册失败");
+            return "register";
         }
 
     }

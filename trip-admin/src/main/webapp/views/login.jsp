@@ -19,23 +19,21 @@
 
 </head>
 <body style="background-color: #E4B89B">
-
+    <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
     <div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
 
         <form role="form" style="margin-top: 250px;" method="post" action="${ctx}/trip-admin/check">
 
-            <input name="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名">
+            <input name="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required>
             <a href="${ctx}/trip-admin/register" style="float: right">注册账号</a>
             <br>
-            <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="密码">
+            <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="密码" required>
             <a href="${ctx}/trip-admin/forget" style="float: right">忘记密码</a>
-            <p id="error-tip" class="help-block red" style="height:15px">${error}</p>
+
             <button type="submit" value="提交" class="btn btn-primary btn-block btn-lg"style="font-size: 22px;text-align: center;">立即登录</button>
         </form>
     </div>
 
 </body>
-<script>
-    <jsp:include page="${ctx}/common/info.jsp"></jsp:include>
-</script>
+
 </html>

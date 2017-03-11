@@ -2,6 +2,8 @@ package com.yin.trip.admin.controller;
 
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -18,6 +20,8 @@ public class ForgetPasswordController {
     @Autowired
     private UserService userService;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @RequestMapping("/forget")
     public String page(String error,String info, ModelMap map){
         map.addAttribute("error", error);
@@ -26,20 +30,18 @@ public class ForgetPasswordController {
     }
     //更新操作
     @RequestMapping("/update")
-    public String update(String userName, String password, int phone, String answer, ModelMap map) {
+    public String update(User user, ModelMap map) {
 
-        User user = new User();
-        user.setUserName(userName);
-        user.setPassword(password);
-        user.setAnswer(answer);
-        user.setPhone(phone);
 
         if (userService.updateUser(user)){
             map.addAttribute("info","更新成功");
-            return "/login";
+            logger.info("更新成功");
+
+            return "login";
         } else {
             map.addAttribute("error", "更新失败，请检查输入信息");
-            return "/forget";
+            logger.warn("更新失败");
+            return "forget";
         }
     }
     //获取密保问题

@@ -3,6 +3,8 @@ package com.yin.trip.admin.service.impl;
 import com.yin.trip.admin.dao.UserDao;
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 新建账户
      *
@@ -28,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
         //数据库中已经存在则不能插入
         if (userDao.getUserByName(user.getUserName()) != null) {
+            logger.warn("数据库中已经存在则不能插入");
             return false;
         }
 
