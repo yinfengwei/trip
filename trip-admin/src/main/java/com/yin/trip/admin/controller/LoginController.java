@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,7 +22,7 @@ import java.util.Date;
  * 登录控制
  */
 @Controller
-
+@SessionAttributes("userName")
 public class LoginController {
 
     @Autowired
@@ -41,12 +42,15 @@ public class LoginController {
 
     //登录操作
     @RequestMapping("/check")
-    public String login(String userName, String password, ModelMap map) {
+    public String login(String userName, String password, ModelMap map, HttpSession session) {
 
         if (userService.checkUserPassword(userName, password)){
 
             map.addAttribute("info", "登录成功,欢迎" + userName + "用户");
+            session.setAttribute("userName",userName);
+
             logger.info("登录成功");
+
             return "main";
 
         } else {
@@ -56,8 +60,6 @@ public class LoginController {
             return "login";
         }
     }
-
-
 
 
 
