@@ -44,17 +44,5 @@ public class ForgetPasswordController {
             return "forget";
         }
     }
-    //获取密保问题
-    @ResponseBody
-    @RequestMapping(value = "/getQuestion",method = RequestMethod.POST)
-    public String getQuestion(String userName) {
 
-        User user = userService.getUserByUseName(userName);
-
-        if (user == null) {
-            return null;
-        } else {
-            return user.getQuestion();
-        }
-    }
 }

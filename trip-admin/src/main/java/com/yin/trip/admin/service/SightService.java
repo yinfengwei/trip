@@ -35,6 +35,12 @@ public interface SightService {
     void update(String name, int rank);
 
     /**
+     *  更新景点评分与评分人数
+     *
+     */
+    void updateScore(String name, float userScore ,long userSum);
+
+    /**
      *  获取景点总数
      * @return
      */

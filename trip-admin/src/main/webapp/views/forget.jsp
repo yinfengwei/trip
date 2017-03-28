@@ -20,18 +20,13 @@
 </head>
 <body style="background-color: #E4B89B">
 
-<div class="container" style="margin: auto;max-width: 340px;">
+<div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat">
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
-    <form role="form" style="margin-top: 60px;" method="post" action="${ctx}/trip-admin/update">
+    <form role="form" style="margin-top: 280px;" method="post" action="${ctx}/trip-admin/update">
 
         <input name="userName" id="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required>
         <br>
         <input name="phone" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="手机号码" required>
-        <br>
-        <button type="button" class="btn btn-primary" onclick="getQuestion()" >获取密保问题</button>
-        <label id="question" class="form-control" style="font-size: 18px;"hidden></label>
-        <br>
-        <input name="answer" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="密保答案" required>
         <br>
         <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="新密码" required>
         <br>
@@ -40,29 +35,5 @@
 </div>
 
 </body>
-<script>
 
-    function getQuestion() {
-        var userName = $('#userName').val();
-
-        $.ajax({
-            type : "POST",  //提交方式
-            url : "${ctx}/trip-admin/getQuestion",//路径
-            data : {
-                "userName" : userName
-            },//数据，这里使用的是Json格式进行传输
-            success : function(data) {//返回数据根据结果进行相应的处理
-
-                if ( data != null && data != "") {
-                    alert("获取成功");
-                    $('#question').remove("hidden");
-                    $('#question').text(data);
-
-                } else {
-                    alert("获取失败，请检查用户名");
-                }
-            }
-        });
-    }
-</script>
 </html>

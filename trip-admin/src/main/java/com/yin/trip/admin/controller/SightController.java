@@ -1,14 +1,24 @@
 package com.yin.trip.admin.controller;
 
+import com.yin.trip.admin.entity.Click;
+import com.yin.trip.admin.entity.Score;
 import com.yin.trip.admin.entity.Sight;
+import com.yin.trip.admin.service.ClickService;
+import com.yin.trip.admin.service.ScoreService;
 import com.yin.trip.admin.service.SightService;
+import com.yin.trip.admin.service.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
+
 
 /**
  * Created by yinfeng on 2017/3/18 0018.
@@ -21,6 +31,18 @@ public class SightController {
 
     @Autowired
     private SightService sightService;
+
+    @Autowired
+    private ClickService clickService;
+
+    @Autowired
+    private ScoreService scoreService;
+
+    @Autowired
+    private UserService userService;
+
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping
     public String page(String info, String error, ModelMap modelMap,
@@ -63,20 +85,108 @@ public class SightController {
         return "sight";
     }
 
+
+    @ResponseBody
+    @RequestMapping("/appendSight")
+    public List<Sight> appendSight(String currentPage) {
+
+        System.out.print(currentPage);
+        int page = Integer.parseInt(currentPage);
+
+        //每页开始的第几条记录
+        int startRow = (page - 1) * 10;
+
+        return sightService.getSights(startRow + 1, startRow + 10);
+
+    }
+
     @RequestMapping("/view")
-    public String viewSight(String name,ModelMap modelMap){
+    public String viewSight(String name, ModelMap modelMap, HttpSession session){
 
         Sight sight = sightService.getSightByName(name);
+        Sight sessionSight = (Sight)session.getAttribute("sight");
+
+
+        //判断是否重复进行点击
+        if (sessionSight != null && sight.getName().equals(sessionSight.getName())) {
+
+            logger.info("重复点击，不记录进入数据库");
+
+        } else {
+            //插入点击记录
+            Click click = new Click();
+
+            String userName = session.getAttribute("userName").toString();
+
+            click.setUserName(userName);
+            //根据用户名查找用户类型
+            click.setUserType(userService.getUserByUseName(userName).getType());
+            click.setSightName(name);
+            click.setSightType(sight.getType());
+            click.setTime(new Date());
+
+            clickService.insertClick(click);
+            modelMap.addAttribute("userName", userName);
+
+            logger.info("记录点击数据成功");
+        }
 
         modelMap.addAttribute("sight", sight);
+
+        session.setAttribute("sight", sight);
 
         return "view";
 
     }
 
+    @RequestMapping("/score")
+    @ResponseBody
+    public String score(String score, HttpSession session){
 
 
+        //判断操作是否成功
+         String success = "";
 
+        try {
+            Sight sight = (Sight)session.getAttribute("sight");
 
+            //插入点击记录
+            Score insertScore = new Score();
+
+            String userName = session.getAttribute("userName").toString();
+
+            insertScore.setUserName(userName);
+            //根据用户名查找用户类型
+            insertScore.setUserType(userService.getUserByUseName(userName).getType());
+            insertScore.setSightName(sight.getName());
+            insertScore.setSightType(sight.getType());
+            insertScore.setTime(new Date());
+            insertScore.setScore(Integer.parseInt(score));
+
+            scoreService.insertScore(insertScore);
+            logger.info("插入用户评分记录成功");
+
+            success = "1";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            success = "0";
+        } finally {
+
+            return success;
+        }
+
+    }
+
+    @RequestMapping("/go")
+    public String goSight(String name, ModelMap modelMap) {
+
+        Sight sight = sightService.getSightByName(name);
+
+        return "/go";
+    }
 
 }
+
+
+

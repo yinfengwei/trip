@@ -12,16 +12,21 @@
     <title>轻松出行</title>
 
     <jsp:include page="${ctx}/common/head.jsp"></jsp:include>
-	<style>
-		span{
 
-		}
+	<style>
+		.wrapper{width:300px;}
+		/*tab*/
+		#star{overflow:hidden;}
+		#star li{float:left; width:20px; height:20px; margin:2px; display:inline; color:#999; font:bold 18px arial; cursor:pointer}
+		#star .act{color:#c00}
+		#star .noact{color:#999}
+
 	</style>
+
 
 </head>
 <body>
 	<div class="container">
-
 		<img width="100%" src="${sight.imgs}" onerror="javascript:this.src='${ctx}/trip-admin/resource/img/error.jpg'" alt="图片">
 		<span>地址 : ${sight.address}</span>
 		<br>
@@ -41,6 +46,22 @@
 			<span>官网 : ${sight.website}</span>
 			<br>
 		</c:if>
+		<hr>
+		<div class="wrapper">
+			<p>打分环节 : </p>
+			<p style="font-size: small">tips:等级为“很差”、“差”、“一般”、“好”、“很好”</p>
+			<p>您的评分为 : <span id="result"></span>
+				<ul id="star">
+					<li>★</li>
+					<li>★</li>
+					<li>★</li>
+					<li>★</li>
+					<li>★</li>
+				</ul>
+
+
+		</div>
+		<hr>
 		<br>
 		<c:if test="${not empty sight.sum}">
 			<span>评论人数 :${sight.sum}</span>
@@ -77,11 +98,61 @@
 			<br>
 		</c:if>
 
-
-
 	</div>
 
 </div>
 
 </body>
+<script>
+	$(function(){
+		var star = document.getElementById("star");
+		var star_li = star.getElementsByTagName("li");
+		var result = document.getElementById("result");
+		var i = 0;
+		var j = 0;
+		var len = star_li.length;
+
+
+		for(i = 0; i < len; i++){
+			star_li[i].index = i;
+
+			star_li[i].onclick = function(){
+
+				var score = this.index + 1;
+
+
+				$.ajax({
+					type: "POST",
+					url: "${ctx}/trip-admin/sight/score",
+					data:  {
+						"score" : score.toString()
+					},
+					dataType: "json",
+					success: function(data) {
+						if (data == '1') {
+							alert("评分成功");
+							result.innerHTML = score + "分";
+							for(j = 0; j <= len; j++){
+								if (j <= score - 1) {
+									$('#star li').eq(j).addClass("act");
+									$('#star li').eq(j).removeClass("noact");
+								} else {
+									$('#star li').eq(j).removeClass("act");
+									$('#star li').eq(j).addClass("noact");
+
+								}
+							}
+						} else {
+							alert("评分失败，请重新评分");
+						}
+
+					}
+				});
+
+			}
+
+
+		}
+	});
+</script>
 </html>

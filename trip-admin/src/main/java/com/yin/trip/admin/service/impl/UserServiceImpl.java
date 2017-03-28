@@ -93,12 +93,11 @@ public class UserServiceImpl implements UserService {
 
         User user1 = getUserByUseName(user.getUserName());
 
-        //判断手机号码与密保答案是否与数据库一致
-        if (user1 == null || user1.getPhone() != user.getPhone()
-                || (!user.getAnswer().equals(user1.getAnswer()))) {
+        //判断手机号码与数据库是否一致
+        if (user1 == null || user1.getPhone() != user.getPhone()) {
             return false;
         } else {
-            userDao.upodateUser(user);
+            userDao.updateUser(user);
             return true;
         }
 

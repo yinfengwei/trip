@@ -21,6 +21,8 @@ public class Sight {
     private String tips;            //tips
     private String imgs;            //图片
     private int sum;                //评论人数
+    private float userScore;        //用户平均评分
+    private long userSum;           //用户评分总数
 
     public int getId() {
         return id;
@@ -140,5 +142,21 @@ public class Sight {
 
     public void setSum(int sum) {
         this.sum = sum;
+    }
+
+    public float getUserScore() {
+        return userScore;
+    }
+
+    public void setUserScore(float userScore) {
+        this.userScore = userScore;
+    }
+
+    public long getUserSum() {
+        return userSum;
+    }
+
+    public void setUserSum(long userSum) {
+        this.userSum = userSum;
     }
 }

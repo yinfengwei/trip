@@ -3,6 +3,8 @@ package com.yin.trip.admin.service.impl;
 import com.yin.trip.admin.dao.SightDao;
 import com.yin.trip.admin.entity.Sight;
 import com.yin.trip.admin.service.SightService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class SightServiceImpl implements SightService{
     @Autowired
     private SightDao sightDao;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 插入景点信息
      *
@@ -27,6 +31,7 @@ public class SightServiceImpl implements SightService{
     @Override
     public void insertData(Sight sight) {
         sightDao.InsertData(sight);
+
     }
 
     /**
@@ -78,8 +83,29 @@ public class SightServiceImpl implements SightService{
             sight.setRank(rank);
 
             sightDao.update(sight);
+            logger.info("更新景点排名成功");
         }
 
+    }
+
+    /**
+     * 更新景点评分与评分人数
+     *
+     * @param name
+     * @param score
+     */
+    @Override
+    public void updateScore(String name, float userScore ,long userSum) {
+        Sight sight = getSightByName(name);
+
+        if (sight != null) {
+
+            sight.setUserScore(userScore);
+            sight.setUserSum(userSum);
+
+            sightDao.update(sight);
+            logger.info("更新景点得分数据成功");
+        }
     }
 
     /**

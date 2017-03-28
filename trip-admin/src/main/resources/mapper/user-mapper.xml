@@ -3,17 +3,17 @@
 
 <mapper namespace="com.yin.trip.admin.dao.UserDao">
     <insert id="insertUser" parameterType="com.yin.trip.admin.entity.User">
-        INSERT INTO t_user(user_name, password, phone, question, answer) VALUES (
-         #{userName}, #{password}, #{phone}, #{question}, #{answer}
+        INSERT INTO t_user(user_name, password, phone, type, age, sex) VALUES (
+         #{userName}, #{password}, #{phone}, #{type}, #{age}, #{sex}
         )
     </insert>
 
     <select id="getUserByName" parameterType="java.lang.String" resultType="com.yin.trip.admin.entity.User">
-        SELECT id, user_name, password, phone, question, answer FROM t_user
+        SELECT id, user_name, password, phone, type, age, sex FROM t_user
         WHERE user_name = #{userName}
     </select>
 
-    <update id="upodateUser" parameterType="com.yin.trip.admin.entity.User">
+    <update id="updateUser" parameterType="com.yin.trip.admin.entity.User">
         UPDATE t_user SET
         password = #{password}
         WHERE user_name = #{userName}

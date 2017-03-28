@@ -6,11 +6,12 @@ package com.yin.trip.admin.entity;
  */
 public class User {
     private long id;
-    private String userName;
-    private String password;
-    private int phone;
-    private String question;
-    private String answer;
+    private String userName;        //用户名
+    private String password;        //密码
+    private int phone;              //手机号码
+    private String type;            //用户类型
+    private int age;                //年龄段
+    private int sex;                //性别,0代表男，1代表女
 
     public long getId() {
         return id;
@@ -45,19 +46,27 @@ public class User {
         this.phone = phone;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getType() {
+        return type;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getAnswer() {
-        return answer;
+    public int getAge() {
+        return age;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 }

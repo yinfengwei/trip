@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yin.trip.admin.dao.ClickDao">
+    <insert id="insertClick" parameterType="com.yin.trip.admin.entity.Click">
+        INSERT INTO t_click(user_name, user_type, sight_name, sight_type, time) VALUES (
+         #{userName}, #{userType}, #{sightName}, #{sightType}, #{time}
+        )
+    </insert>
+
+</mapper>

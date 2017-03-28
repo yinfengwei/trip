@@ -54,6 +54,7 @@ public class SightTest {
         sight.setTips("");
         sight.setImgs("");
         sight.setSum(2);
+        sight.setUserScore(4.5f);
 
         sightService.insertData(sight);
 

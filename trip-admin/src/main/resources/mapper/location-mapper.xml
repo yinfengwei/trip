@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yin.trip.admin.dao.LocationDao">
+    <insert id="insertLocation" parameterType="com.yin.trip.admin.entity.Location">
+        INSERT INTO t_location(user_name, longitude, latitude, time) VALUES (
+         #{userName}, #{longitude}, #{latitude}, #{time}
+        )
+    </insert>
+
+</mapper>

@@ -5,28 +5,33 @@
     <insert id="InsertData" parameterType="com.yin.trip.admin.entity.Sight">
         INSERT INTO t_sight(
         name, score, address, type, rank, play_time,phone,
-         website, open_time, ticket, introduce, tips, imgs, sum
+         website, open_time, ticket, introduce, tips, imgs, sum,
+          user_score, user_sum
          ) VALUES (
         #{name}, #{score}, #{address}, #{type}, #{rank}, #{playTime},#{phone},
-        #{website}, #{openTime}, #{ticket}, #{introduce}, #{tips}, #{imgs}, #{sum}
-        )
+        #{website}, #{openTime}, #{ticket}, #{introduce}, #{tips}, #{imgs}, #{sum},
+        #{userScore}, #{userSum})
     </insert>
 
     <select id="getSightByParam" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-         website, open_time, ticket, introduce, tips, imgs, sum
+         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum
          FROM t_sight WHERE name = #{name}
     </select>
 
     <select id="getSights" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-        website, open_time, ticket, introduce, tips, imgs, sum
+        website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum
         FROM t_sight WHERE rank BETWEEN #{start} AND #{end}
         ORDER BY rank
     </select>
 
     <update id="update" parameterType="com.yin.trip.admin.entity.Sight">
-        UPDATE t_sight SET rank = #{rank}
+        UPDATE t_sight
+        SET
+        rank = #{rank},
+        user_score = #{userScore},
+        user_sum = #{userSum}
         WHERE name = #{name}
     </update>
 

@@ -19,37 +19,29 @@
 </head>
 <body style="background-color: #E4B89B;height: 100%;width: 100%">
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
+    <div style="margin-top: 10px;margin-left: 10px;margin-right: 10px;">
+        <label style="float: left">用户 ：${userName}</label>
+
+        <a href="${ctx}/trip-admin/login" style="float: right">
+            注销登录
+        </a>
+
+    </div>
     <div class="container" style="margin: auto;max-width: 340px;min-height:550px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
-        <div class="container" style="margin-top: 270px">
-            <%--<p class="text-center">您的经纬度信息为 : ${lon},${lat}</p>--%>
-            <p style="margin: auto">您所处位置为 : ${addr}</p>
 
-            <br>
+        <div class="content" style="margin-top: 280px;">
+            <p style="font-size: medium"> trip 休闲推荐会根据您的位置以及用户信息等进行景点推荐。</p>
 
-            <div>
-                <input type="text" style="height: 36px" placeholder="更正位置信息">
-
-                <button type="button" class="btn btn-warning">点击更正</button>
-            </div>
-
-            <br>
-
-            <div style="margin: auto">
-                 <div>
-                     <p style="font-size: 18px;">登录可以进行景点推荐呦
-                         <a href="${ctx}/trip-admin/login" style="font-size: 18px;text-align: center;">我要登录</a>
-                     </p>
-                 </div>
-                 <div>
-                     <p style="font-size: 18px;">不想登录
-                         <a href="${ctx}/trip-admin/sight" style="font-size: 18px;text-align: center;">随便瞧瞧</a>
-                     </p>
-                 </div>
-            </div>
+            <a href="${ctx}/trip-admin/sight" style="font-size: 18px;text-align: center;">
+                <img src="${ctx}/trip-admin/resource/img/timg.gif" style="width: 100%">
+            </a>
+            <p>戳上方大白的肚子查看出行推荐吧！</p>
         </div>
 
     </div>
 
 </body>
+<script>
 
+</script>
 </html>

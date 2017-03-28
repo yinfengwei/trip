@@ -30,8 +30,9 @@ public class UserTest {
         user.setUserName("test");
         user.setPassword("123456");
         user.setPhone(123456);
-        user.setQuestion("adsa");
-        user.setAnswer("123");
+        user.setType("student");
+        user.setAge(1);
+        user.setSex(0);
     }
 
     @Test
@@ -48,6 +49,11 @@ public class UserTest {
         userService.insertUser(user);
 
         assert userService.checkUserPassword(userName, password);
+
+    }
+
+    @Test
+    public void test(){
 
     }
 }

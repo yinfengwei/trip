@@ -18,4 +18,10 @@ public class Test {
         String result = HttpUtil.sendGet(url,param);
         System.out.print(result);
     }
+
+    @org.junit.Test
+    public void testBaiduApi(){
+        String address = "世界之窗";
+
+    }
 }
