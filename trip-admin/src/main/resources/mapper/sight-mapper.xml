@@ -22,8 +22,12 @@
     <select id="getSights" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum
-        FROM t_sight WHERE rank BETWEEN #{start} AND #{end}
-        ORDER BY rank
+        FROM t_sight
+        <if test="start!=null and start!=''">
+            WHERE rank BETWEEN #{start} AND #{end}
+            ORDER BY rank
+        </if>
+
     </select>
 
     <update id="update" parameterType="com.yin.trip.admin.entity.Sight">

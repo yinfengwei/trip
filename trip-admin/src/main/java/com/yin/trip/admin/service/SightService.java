@@ -3,6 +3,7 @@ package com.yin.trip.admin.service;
 import com.yin.trip.admin.entity.Sight;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yinfeng on 2017/3/18 0018.
@@ -20,6 +21,12 @@ public interface SightService {
      *
      */
     List<Sight> getSights(int start, int end);
+
+    /**
+     *   获取景点列表
+     *
+     */
+    List<Sight> getSights();
 
     /**
      *  根据景点名获取景点信息
@@ -45,4 +52,12 @@ public interface SightService {
      * @return
      */
     int getCount();
+
+    /**
+     *  推荐景点
+     */
+    List<Map.Entry<Sight, Double>> getRecommend(String userName);
+
+    Map<String, Object> getSimilar(String userName);
+
 }

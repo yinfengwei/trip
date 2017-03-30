@@ -2,6 +2,9 @@ package com.yin.trip.admin.service;
 
 import com.yin.trip.admin.entity.User;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by yinfeng on 2017/3/10 0010.
  */
@@ -28,6 +31,20 @@ public interface UserService {
      * @return
      */
     User getUserByUseName(String name);
+
+    /**
+     *  根据参数获取用户信息
+     * @param param
+     * @return
+     */
+    List<User> getUserList(Map<String, Object> param);
+
+    /**
+     *  根据用户名获取与该用户年龄、性别、类型任一方面相关的用户类表
+     * @param name
+     * @return
+     */
+    List<String> getCorrelationUser(String name);
 
     /**
      *  更新用户信息

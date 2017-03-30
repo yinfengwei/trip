@@ -2,6 +2,7 @@ package com.yin.trip.admin.dao;
 
 import com.yin.trip.admin.entity.Score;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,4 +28,12 @@ public interface ScoreDao {
      * @param score
      */
     void updateScore(Score score);
+
+    /**
+     *
+     *  根据参数获取数据
+     * @param map
+     * @return
+     */
+    List<Score> getScoreList(Map<String, Object> map);
 }

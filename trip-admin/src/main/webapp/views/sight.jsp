@@ -243,10 +243,10 @@
                                     <i class="iconfont icon-xingxing"></i>
                                 </c:forEach>
                             </span>
-                                <c:if test="${not empty data.userScore}">
+                                <c:if test="${data.userScore != ''}">
                                     <span class="price">${data.userScore}分/5分</span>
                                 </c:if>
-                                <c:if test="${empty data.userScore}">
+                                <c:if test="${data.userScore == ''}">
                                     <span class="price">携程评分：${data.score}分/5分</span>
                                 </c:if>
                             </p>

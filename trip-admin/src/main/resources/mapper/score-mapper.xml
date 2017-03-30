@@ -23,4 +23,24 @@
         user_name = #{userName} AND sight_name = #{sightName}
     </update>
 
+    <select id="getScoreList" parameterType="java.util.HashMap" resultType="com.yin.trip.admin.entity.Score">
+        SELECT * FROM t_score WHERE 1 = 1
+        <if test="userName!=null and userName!=''">
+            AND user_name = #{userName}
+        </if>
+        <if test="sightName!=null and sightName!=''">
+            AND sight_name = #{sightName}
+        </if>
+        <if test="startScore!=null and startScore!=''and endScore!=null and endScore!=''">
+            AND score BETWEEN #{startScore} AND #{endScore}
+        </if>
+        <if test="usersName!=null and usersName!=''">
+            AND user_name IN
+            <foreach collection="usersName" index="index" item="user" open="(" close=")" separator=",">
+                #{user}
+            </foreach>
+        </if>
+
+    </select>
+
 </mapper>

@@ -11,6 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by yinfeng on 2017/3/10 0010.
  */
@@ -53,7 +57,20 @@ public class UserTest {
     }
 
     @Test
-    public void test(){
+    public void testGetCorrelationUser(){
 
+        String userName = "test";
+
+        List<String> users = userService.getCorrelationUser(userName);
+
+//        Map<String, Object> param = new HashMap<String, Object>();
+
+
+//        param.put("type", userService.getUserByUseName(userName).getType());
+
+        for(String user : users) {
+
+            System.out.println(user);
+        }
     }
 }

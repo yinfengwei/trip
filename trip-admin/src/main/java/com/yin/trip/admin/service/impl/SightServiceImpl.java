@@ -1,17 +1,22 @@
 package com.yin.trip.admin.service.impl;
 
 import com.yin.trip.admin.dao.SightDao;
+import com.yin.trip.admin.entity.Score;
 import com.yin.trip.admin.entity.Sight;
+import com.yin.trip.admin.entity.User;
+import com.yin.trip.admin.service.ClickService;
+import com.yin.trip.admin.service.ScoreService;
 import com.yin.trip.admin.service.SightService;
+import com.yin.trip.admin.service.UserService;
+import com.yin.trip.admin.util.Algorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
-
+import java.util.Map.Entry;
 /**
  * Created by yinfeng on 2017/3/18 0018.
  */
@@ -20,6 +25,15 @@ public class SightServiceImpl implements SightService{
 
     @Autowired
     private SightDao sightDao;
+
+    @Autowired
+    private ScoreService scoreService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ClickService clickService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -49,6 +63,14 @@ public class SightServiceImpl implements SightService{
         map.put("end", end);
 
         return sightDao.getSights(map);
+    }
+
+    /**
+     * 获取景点列表
+     */
+    @Override
+    public List<Sight> getSights() {
+        return sightDao.getSights(null);
     }
 
     /**
@@ -92,7 +114,7 @@ public class SightServiceImpl implements SightService{
      * 更新景点评分与评分人数
      *
      * @param name
-     * @param score
+     * @param
      */
     @Override
     public void updateScore(String name, float userScore ,long userSum) {
@@ -116,5 +138,363 @@ public class SightServiceImpl implements SightService{
     @Override
     public int getCount() {
         return sightDao.count();
+    }
+
+    /**
+     * 推荐景点
+     */
+    @Override
+    public List<Entry<Sight, Double>> getRecommend(String userName) {
+
+        //1、获得用户相似度
+        Map<String,Object> similar = getSimilar(userName);
+
+        //2、对所有景点进行分析获得推荐
+        //获取所有景点
+        List<Sight> sights = getSights();
+
+
+        //获取每个景点的得分
+        Map<Sight,Double> recommend = new HashMap<Sight, Double>();
+
+        //用户曾经评论的景点赋值为0
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("userName", userName);
+
+        List<Score> scores = scoreService.getScoreList(map);
+        List<String> sightName = new ArrayList<String>();
+
+        for(Score score : scores) {
+            recommend.put(getSightByName(score.getSightName()), 0D);
+            sightName.add(score.getSightName());
+
+//            sights.remove(getSightByName(score.getSightName()));
+            logger.info("景点：" + getSightByName(score.getSightName()).getName() + "为0");
+        }
+
+//        logger.info("景点后总数：" + recommend.size() + recommend.containsKey(getSightByName("世界之窗")));
+//        Sight tempsight = getSightByName("世界之窗");
+//        logger.info("是否包含世界之窗" + recommend.containsKey(tempsight));
+
+
+
+        for(Sight sight : sights) {
+
+            if (sightName.contains(sight.getName())) {
+                logger.info("跳过景点：" + sight.getName());
+                continue;
+            }
+
+            double recommendScore = 0;
+            //如果尚未有用户进行评分则考虑冷启动使用携程评分占一定比例
+            //携程得分80%，用户平均评分 40%，如果有用户评分则占1
+            if (sight.getUserScore() == 0) {
+
+                //携程评价总数最多为15615,以10为底，按照评价人数进行得分的筛选比例
+                if (sight.getSum() < 10) {
+                    recommendScore = sight.getScore() * 0.1;
+                } else {
+
+                    recommendScore = sight.getScore() * 0.1 * (Math.log(sight.getSum()) / Math.log(10) + 1);
+
+                }
+
+
+            } else {
+                //被评分
+
+                Map<String, Object> sightMap = new HashMap<String, Object>();
+
+                sightMap.put("sightName", sight.getName());
+
+                List<Score> sightScore = scoreService.getScoreList(sightMap);
+
+
+                for (Score score : sightScore) {
+
+                    Double tScore = (Double) similar.get(score.getUserName());
+
+                    //如果在用户相似度中则进行计算
+                    if (tScore != null) {
+                        recommendScore += tScore * score.getScore();
+                    }
+                }
+
+                //如果评分为0 ，则以用户平均得分为准80%
+                if (recommendScore == 0) {
+
+                    recommendScore += sight.getUserScore() * 0.6;
+                }
+            }
+
+            recommend.put(sight, recommendScore);
+
+        }
+
+        //排序
+        List<Entry<Sight, Double>> enList = new ArrayList<Entry<Sight, Double>>(recommend.entrySet());
+        Collections.sort(enList, new Comparator<Map.Entry<Sight, Double>>() {
+            public int compare(Map.Entry<Sight, Double> o1, Map.Entry<Sight, Double> o2) {
+                Double a = o1.getValue() - o2.getValue();
+                if (a == 0) {
+                    return 0;
+                } else if (a > 0) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+
+        for (int i = 0; i < enList.size(); i++) {
+
+           Entry<Sight, Double> entry  = enList.get(i);
+
+
+           System.out.println(entry.getKey().getName() + entry.getValue());
+        }
+
+
+//        return enList.get(enList.size() - 1).getKey();
+
+        return enList;
+    }
+
+    /**
+     *  计算用户相似度
+     */
+    public Map<String, Object> getSimilar(String userName) {
+
+        //获取评分[1-2] 以及 [3-5]分别的用户集以及倒排表
+//        List<String> userNames1 = scoreService.getSimUserByName(userName,1,2);
+//        Map<String, List<String>> chart1 = scoreService.getScoreChart(userName, 1, 2);
+        //获取点击用户集
+        List<String> clickUserNames = clickService.getSimUserByName(userName);
+        Map<String, Object> result ;
+
+        logger.info(clickUserNames.size() + "");
+
+        //若点击用户集为空则使用用户注册信息中按照年龄、类型、性别进行分析
+        if (clickUserNames.size() == 0) {
+//           logger.info("进入冷启动");
+            User user = userService.getUserByUseName(userName);
+            result = new HashMap<String, Object>();
+
+            //获取所有相关用户，包括年龄、类型、性别相同的相关用户
+            List<String> userNames = userService.getCorrelationUser(userName);
+
+            //添加该用户至最后一位
+            userNames.add(user.getUserName());
+
+            //加上本用户
+            int num = userNames.size();
+
+            int[][] userList = new int[num][3];
+            int i = 0,j = 0;
+
+            for (i = 0; i < num; i++) {
+                for (j = 0; j < 3; j++) {
+                    userList[i][j] = 0;
+                }
+            }
+
+            //循环
+            for (i = 0; i < num; i++ ){
+                //填入信息
+                //类别
+                User tempUser = userService.getUserByUseName(userNames.get(i));
+                if(tempUser.getType().equals(user.getType())) {
+                    userList[i][0] = 1;
+                }
+                if(tempUser.getAge() == user.getAge()) {
+                    userList[i][1] = 1;
+                }
+                if(tempUser.getSex() == user.getSex()) {
+                    userList[i][2] = 1;
+                }
+            }
+
+            System.out.println("获得矩阵为");
+            for (i = 0; i < num; i++) {
+                for (j = 0; j < 3; j++) {
+                    System.out.print(userList[i][j] + " ");
+                }
+                System.out.println();
+            }
+
+            //计算相似度,最后一个是原来的用户不需要计算
+            for (i = 0; i < num - 1 ; i++) {
+                result.put(userNames.get(i), getUserSimilar(userList[i],userList[num - 1]));
+                System.out.println(userNames.get(i) + "相似度为" + result.get(userNames.get(i)));
+            }
+
+
+
+        } else {
+
+            //获取评分表
+            List<String> scoreUserNames = scoreService.getSimUserByName(userName,3,5);
+
+            Map<String, List<String>> scoreChart = scoreService.getScoreChart(userName, 3, 5);
+
+            Map<String, List<String>> clickChart = clickService.getClickChart(userName);
+
+            //综合两个相似度
+            Map<String, Object> similarByScore = Algorithm.getSimilar(userName,scoreUserNames,scoreChart, clickUserNames, clickChart);
+
+//            Map<String, Object> similarByClick = Algorithm.getSimilar(userName,clickUserNames,clickChart);
+
+            //如果评分相关用户为0 则使用点击相似度
+            result = similarByScore;
+
+
+        }
+
+//
+//
+
+
+
+//        //1.1. 获得与用户相关的用户(类型、位置、评分、点击) 一一对应
+//        Map<String,Integer> similarUser = new HashMap<String, Integer>();
+//
+//        //先添加该用户
+//        similarUser.put(userName, 0);
+//
+//        int count = 1;
+//
+//        //将评分分为两部分[1-2],[3-5]两种
+//        List<String> userNames1 = scoreService.getSimUserByName(userName,1,2);
+//        List<String> userNames2 = scoreService.getSimUserByName(userName,3,5);
+//
+//
+//        //添加与该用户评分过同个项目的用户
+//        for (String user : userNames1) {
+//            similarUser.put(user,count);
+//            count++;
+//        }
+//
+//        for (String user : userNames2) {
+//            similarUser.put(user,count);
+//            count++;
+//        }
+//
+//        //景点 - 用户代排表 评分为 [1,2] 与 [3, 5]
+//        Map<String, List<String>> chart1 = scoreService.getScoreChart(userName, 1, 2);
+//        Map<String, List<String>> chart2 = scoreService.getScoreChart(userName, 3, 5);
+//
+//        //建立表，数量必须大于1
+//        int userSum = count;
+//
+//        logger.info("获取与用户一起评分过得用户总数" + userSum);
+//        double[][] user = new double[userSum][userSum];
+//        int itemSum[] = new int[userSum];
+//        int i = 0 ,j = 0;
+//
+//
+//        //初始化
+//        for(i = 0 ; i < userSum; i++) {
+//            for (j = 0; j < userSum; j++) {
+//                user[i][j] = 0;
+//            }
+//            itemSum[i] = 0;
+//        }
+//
+//        //从评分[3, 5] 的评分倒排表填充数据
+//        Set<Map.Entry<String, List<String>>> entries1 = chart1.entrySet();
+//
+//        Set<Map.Entry<String, List<String>>> entries2 = chart2.entrySet();
+//
+//        for (Map.Entry<String, List<String>> entry : entries1) {
+//
+//            List<String> tempList = entry.getValue();
+//
+//            //两个用户都有则进行填充
+//            for (i = 0; i < tempList.size() - 1; i++) {
+//                for (j = 1; j < tempList.size(); j++) {
+//                    int a = similarUser.get(tempList.get(i));
+//                    int b = similarUser.get(tempList.get(j));
+//
+//                    logger.info("增加的坐标为:" + a + "," + b);
+//                    //获取用户名，然后map对应坐标
+//                    user[a][b] += 1;
+//                    user[b][a] += 1;
+//                    itemSum[a] += 1;
+//                    itemSum[b] += 1;
+//                }
+//            }
+//        }
+//
+//        for (Map.Entry<String, List<String>> entry : entries2) {
+//
+//            List<String> tempList = entry.getValue();
+//
+//            //两个用户都有则进行填充
+//            for (i = 0; i < tempList.size() - 1; i++) {
+//                for (j = 1; j < tempList.size(); j++) {
+//                    int a = similarUser.get(tempList.get(i));
+//                    int b = similarUser.get(tempList.get(j));
+//
+//                    logger.info("增加的坐标为:" + a + "," + b);
+//                    //获取用户名，然后map对应坐标
+//                    user[a][b] += 1;
+//                    user[b][a] += 1;
+//                    itemSum[a] += 1;
+//                    itemSum[b] += 1;
+//                }
+//            }
+//        }
+//
+//        //采用余弦计算
+//        //初始化
+////        for(i = 0 ; i < userSum; i++) {
+//
+//            for (j = 0; j <userSum; j++) {
+//                user[0][j] = user[0][j]/Math.sqrt(itemSum[0] * itemSum[j]);
+//                System.out.print(user[0][j] + " ");
+//            }
+//            System.out.println( "  =" + itemSum[0]);
+////        }
+//
+//        Map<String, Object> similar = new HashMap<String, Object>();
+//
+//        for (String name : userNames1) {
+//            similar.put(name, user[0][similarUser.get(name)]);
+//        }
+//        for (String name : userNames2) {
+//            similar.put(name, user[0][similarUser.get(name)]);
+//        }
+
+        return result;
+    }
+
+    //整数计算皮卡尔德算法
+    private double getUserSimilar(int[] user1, int[] user2) {
+        int n = 0;// 数量n
+
+        int size = user1.length;
+
+        for (int i = 0; i < size; i++) {
+
+            n += Math.pow((user1[i] - user2[i]), 2) ;
+
+        }
+
+        double sim = 1.0 / (1 + Math.sqrt(n));
+
+
+
+
+
+        // p=(Σxy-Σx*Σy/n)/Math.sqrt((Σx2-(Σx)2/n)(Σy2-(Σy)2/n));
+//        double sd = sxy - sx * sy / n;
+//        double sm = Math.sqrt((sx2 - Math.pow(sx, 2) / n) * (sy2 - Math.pow(sy, 2) / n));
+//
+//        logger.info("n = " + n + ",sxy=" + sxy + " ,sx=" + sx + ",sy=" + sy);
+//        logger.info("n = " + n + ",sx2=" + sx2 + " ,sy2=" + sy2);
+
+        logger.info("sim = " + sim );
+        return sim;
     }
 }

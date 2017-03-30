@@ -91,6 +91,14 @@ public class SightTest {
             System.out.println(list.get(i).getName());
         }
     }
+
+    @Test
+    public void testRecommend(){
+        String userName = "test";
+
+        sightService.getRecommend(userName);
+//        sightService.getSimilar(userName);
+    }
 //    //测试更新景点排名
 //    @Test
 //    public void testUpdateRank(){

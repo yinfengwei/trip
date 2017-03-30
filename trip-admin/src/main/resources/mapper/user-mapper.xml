@@ -13,6 +13,21 @@
         WHERE user_name = #{userName}
     </select>
 
+    <select id="getUserList" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.User">
+        SELECT id, user_name, password, phone, type, age, sex FROM t_user
+        WHERE 1=1
+        <if test="type!=null and type!=''">
+            AND type = #{type}
+        </if>
+        <if test="age!=null and age!=''">
+            AND age = #{age}
+        </if>
+        <if test="sex!=null">
+            AND sex = #{sex}
+        </if>
+
+    </select>
+
     <update id="updateUser" parameterType="com.yin.trip.admin.entity.User">
         UPDATE t_user SET
         password = #{password}

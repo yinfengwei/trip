@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by yinfeng on 2017/3/10 0010.
  *  账户操作类
@@ -80,6 +85,81 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUseName(String name) {
         return userDao.getUserByName(name);
+    }
+
+    /**
+     * 根据参数获取用户信息
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public List<User> getUserList(Map<String, Object> param) {
+        return userDao.getUserList(param);
+    }
+
+    /**
+     * 根据用户名获取与该用户年龄、性别、类型任一方面相关的用户类表
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public List<String> getCorrelationUser(String name) {
+
+        User user = getUserByUseName(name);
+        String type = user.getType();
+        int age = user.getAge();
+        int sex = user.getSex();
+
+        //获取类型相同的用户
+        List<String> result = new ArrayList<String>();
+        Map<String,Object> param = new HashMap<String, Object>();
+        param.put("type", type);
+
+        for (User tempUser : getUserList(param)) {
+
+            //不包含该用户
+            if (!tempUser.getUserName().equals(name)) {
+                result.add(tempUser.getUserName());
+            }
+
+        }
+
+        logger.info("获取到类型相同相关用户总数为" + result.size());
+
+        //获取年龄段相同的用户
+        param.remove("type");
+        param.put("age", age);
+
+        for (User tempUser : getUserList(param)) {
+
+            //如果用户列表中不含有该用户则进行添加
+            if ((!tempUser.getUserName().equals(name)) &&
+                    (!result.contains(tempUser.getUserName()))){
+                result.add(tempUser.getUserName());
+            }
+        }
+        logger.info("获取到类型与年龄相同相关用户总数为" + result.size());
+
+        //获取年龄段相同的用户
+        param.remove("age");
+        param.put("sex", sex);
+
+        for (User tempUser : getUserList(param)) {
+
+            //如果用户列表中不含有该用户则进行添加
+            if ((!tempUser.getUserName().equals(name))
+                    && (!result.contains(tempUser.getUserName()))){
+                result.add(tempUser.getUserName());
+            }
+        }
+
+        logger.info("获取到类型与年龄和性别相关用户总数为" + result.size());
+
+
+
+        return result;
     }
 
     /**

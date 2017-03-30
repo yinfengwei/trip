@@ -16,8 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -46,44 +45,108 @@ public class SightController {
 
     @RequestMapping
     public String page(String info, String error, ModelMap modelMap,
-                       String page) {
+                       String page, HttpSession session) {
 
         modelMap.addAttribute("info", info);
         modelMap.addAttribute("error", error);
 
 
-        //查到的总用户数
-        int sum = sightService.getCount();
-        int pageSize = 10;//默认为10
 
-        modelMap.addAttribute("sum", sum);
+        //访客模式
+        if(session.getAttribute("userName") == null) {
 
-        //总页数
-        int pageTimes;
-        if (sum % pageSize == 0) {
-            pageTimes = sum/pageSize;
-         }else {
-            pageTimes = sum/pageSize + 1;
-         }
+            //查到的总用户数
+            int sum = sightService.getCount();
+            int pageSize = 15;//默认为20
 
-        modelMap.addAttribute("pageTimes", pageTimes);
+            modelMap.addAttribute("sum", sum);
 
-        //页面初始的时候page没有值
-        if(null == page) {
-            page = "1";
+            //总页数
+            int pageTimes;
+            if (sum % pageSize == 0) {
+                pageTimes = sum / pageSize;
+            } else {
+                pageTimes = sum / pageSize + 1;
+            }
+
+            modelMap.addAttribute("pageTimes", pageTimes);
+
+            //页面初始的时候page没有值
+            if (null == page) {
+                page = "1";
+            }
+
+            //每页开始的第几条记录
+            int startRow = (Integer.parseInt(page) - 1) * pageSize;
+
+            //排名不能为0
+            List<Sight> list = sightService.getSights(startRow + 1, startRow + pageSize);
+
+            modelMap.addAttribute("list", list);
+            modelMap.addAttribute("currentPage", Integer.parseInt(page));
+        } else {
+
+            String userName = session.getAttribute("userName").toString();
+            List<String> recommend;
+            //页面初始的时候page没有值,获取推荐列表
+            if (null == page) {
+                page = "1";
+                //推荐
+                List<Map.Entry<Sight, Double>> recommendSight = sightService.getRecommend(userName);
+
+                recommend = new ArrayList<String>();
+
+                //添加推荐景点名保存至session中
+                for (int i = 0 ; i < recommendSight.size(); i++) {
+
+                    recommend.add(recommendSight.get(i).getKey().getName());
+                }
+
+
+                session.setAttribute("recommend", recommend);
+            } else {
+
+                recommend = (ArrayList<String>)session.getAttribute("recommend");
+            }
+
+            //查到的总用户数
+            int sum = recommend.size();
+            int pageSize = 15;//默认为20
+
+            modelMap.addAttribute("sum", sum);
+
+            //总页数
+            int pageTimes;
+            if (sum % pageSize == 0) {
+                pageTimes = sum / pageSize;
+            } else {
+                pageTimes = sum / pageSize + 1;
+            }
+
+            modelMap.addAttribute("pageTimes", pageTimes);
+
+
+
+            //每页开始的第几条记录
+            int startRow = (Integer.parseInt(page) - 1) * pageSize;
+
+            //排名不能为0
+            List<Sight> list = new ArrayList<Sight>();
+
+            for(int j = 0; j < pageSize ; j++) {
+                list.add(sightService.getSightByName(recommend.get(startRow + j)));
+            }
+
+            modelMap.addAttribute("list", list);
+            modelMap.addAttribute("currentPage", Integer.parseInt(page));
+
+
         }
-
-        //每页开始的第几条记录
-        int startRow = (Integer.parseInt(page)-1) * pageSize;
-
-        //排名不能为0
-        List<Sight> list = sightService.getSights(startRow + 1, startRow + pageSize);
-
-        modelMap.addAttribute("list", list);
-        modelMap.addAttribute("currentPage", Integer.parseInt(page));
 
         return "sight";
     }
+
+
 
 
     @ResponseBody
@@ -107,28 +170,35 @@ public class SightController {
         Sight sessionSight = (Sight)session.getAttribute("sight");
 
 
-        //判断是否重复进行点击
-        if (sessionSight != null && sight.getName().equals(sessionSight.getName())) {
 
-            logger.info("重复点击，不记录进入数据库");
 
-        } else {
-            //插入点击记录
-            Click click = new Click();
+        //如果为访客模式则不记录
+        if (session.getAttribute("userName") != null) {
 
-            String userName = session.getAttribute("userName").toString();
+            //判断是否重复进行点击
+            if (sessionSight != null && sight.getName().equals(sessionSight.getName())) {
 
-            click.setUserName(userName);
-            //根据用户名查找用户类型
-            click.setUserType(userService.getUserByUseName(userName).getType());
-            click.setSightName(name);
-            click.setSightType(sight.getType());
-            click.setTime(new Date());
+                logger.info("重复点击，不记录进入数据库");
 
-            clickService.insertClick(click);
-            modelMap.addAttribute("userName", userName);
+            } else {
 
-            logger.info("记录点击数据成功");
+                String userName = session.getAttribute("userName").toString();
+                //插入点击记录
+                Click click = new Click();
+
+
+                click.setUserName(userName);
+                //根据用户名查找用户类型
+                click.setUserType(userService.getUserByUseName(userName).getType());
+                click.setSightName(name);
+                click.setSightType(sight.getType());
+                click.setTime(new Date());
+
+                clickService.insertClick(click);
+                modelMap.addAttribute("userName", userName);
+
+                logger.info("记录点击数据成功");
+            }
         }
 
         modelMap.addAttribute("sight", sight);

@@ -8,4 +8,21 @@
         )
     </insert>
 
+    <select id="getClickList" parameterType="java.util.HashMap" resultType="com.yin.trip.admin.entity.Click">
+        SELECT * FROM t_click WHERE 1 = 1
+        <if test="userName!=null and userName!=''">
+            AND user_name = #{userName}
+        </if>
+        <if test="sightName!=null and sightName!=''">
+            AND sight_name = #{sightName}
+        </if>
+        <if test="usersName!=null and usersName!=''">
+            AND user_name IN
+            <foreach collection="usersName" index="index" item="user" open="(" close=")" separator=",">
+                #{user}
+            </foreach>
+        </if>
+
+    </select>
+
 </mapper>

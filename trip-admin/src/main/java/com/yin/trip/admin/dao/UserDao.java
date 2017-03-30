@@ -2,6 +2,9 @@ package com.yin.trip.admin.dao;
 
 import com.yin.trip.admin.entity.User;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by yinfeng on 2017/3/10 0010.
  */
@@ -20,6 +23,13 @@ public interface UserDao {
      * @return
      */
     User getUserByName(String name);
+
+    /**
+     *  根据条件查找用户
+     * @param param
+     * @return
+     */
+    List<User> getUserList(Map<String,Object> param);
 
     /**
      *  更新用户信息
