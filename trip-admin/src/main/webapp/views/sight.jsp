@@ -158,12 +158,20 @@
 
         }
         .right a{
-            width: 20%;
+            width: 23%;
             display: inline-block;
         }
         .right span{
-            width: 20%;
+            width: 23%;
             display: inline-block;
+        }
+        .icon-icon{
+            position: absolute;
+            top: 50%;
+            left: 2%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0);
+            font-size: 5em;
         }
     </style>
 </head>
@@ -176,6 +184,7 @@
 </div>
 
     <div class="container" style="margin: auto;max-width: 340px;" >
+        <div style="margin-top: 20px;"></div>
         <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
 
         <div style="margin-top: 10px;margin-left: 10px;margin-right: 10px;height: 15px;">
@@ -286,28 +295,41 @@
         <div class="pagging">
             <%--<div class="left">共${userNum}条记录</div>--%>
             <div class="right">
+                <%--前面两个--%>
                 <c:if test="${currentPage == 1}">
                     <span style="font-size: 25px;">${currentPage}</span>
+                    <span style="font-size: 25px;"> ...  </span>
                 </c:if>
                 <c:if test="${currentPage != 1}">
-                    <a href="${ctx}/trip-admin/sight?type=${type}&page=1" style="font-size: 25px;">1 </a>
-                    <c:if test="${currentPage == pageTimes}">
+
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=1" style="font-size: 25px;"><<1 </a>
+                    <c:if test="${currentPage == 2}">
                         <span style="font-size: 25px;"> ...  </span>
                     </c:if>
-                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage-1}" style="font-size: 18px;width: 30px">${currentPage-1}  </a>
+                    <c:if test="${currentPage != 2}">
+                        <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage-1}" style="font-size: 25px;"><${currentPage-1}  </a>
+                    </c:if>
                 </c:if>
 
-
-                <c:if test="${currentPage == pageTimes}">
-                    <span style="font-size: 25px;">  ${currentPage}  </span>
+                    <%--后面两个--%>
+                <c:if test="${currentPage == 1}">
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage+1}" style="font-size: 25px;"> ${currentPage+1}>  </a>
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${pageTimes}" style="font-size: 25px;float: right;">  ${pageTimes}>>  </a>
                 </c:if>
-                <c:if test="${currentPage != pageTimes}">
-
-                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage+1}" style="font-size: 25px;">  ${currentPage+1}  </a>
-                    <c:if test="${currentPage == 1}">
+                <c:if test="${currentPage != 1}">
+                    <c:if test="${currentPage == pageTimes}">
                         <span style="font-size: 25px;"> ...  </span>
-                     </c:if>
-                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${pageTimes}" style="font-size: 25px;float: right;">  ${pageTimes}  </a>
+                        <span style="font-size: 25px;"> ${pageTimes}  </span>
+                    </c:if>
+                    <c:if test="${currentPage == pageTimes-1}">
+                        <span style="font-size: 25px;"> ...  </span>
+                        <a href="${ctx}/trip-admin/sight?type=${type}&page=${pageTimes}" style="font-size: 25px;float: right;">  ${pageTimes}  </a>
+                    </c:if>
+
+                    <c:if test="${currentPage < pageTimes - 1}">
+                        <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage+1}" style="font-size: 25px;"> ${currentPage+1}>  </a>
+                        <a href="${ctx}/trip-admin/sight?type=${type}&page=${pageTimes}" style="font-size: 25px;float: right;">  ${pageTimes}>>  </a>
+                    </c:if>
                 </c:if>
             </div>
         </div>
