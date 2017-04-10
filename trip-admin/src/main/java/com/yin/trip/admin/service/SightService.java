@@ -1,6 +1,8 @@
 package com.yin.trip.admin.service;
 
+import com.yin.trip.admin.entity.Distance;
 import com.yin.trip.admin.entity.Sight;
+import com.yin.trip.common.entity.BaiDuLocation;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,12 @@ public interface SightService {
      */
     List<Sight> getSights(int start, int end);
 
+//    /**
+//     *   获取景点列表
+//     *
+//     */
+//    List<Sight> getSightsById(int id);
+
     /**
      *   获取景点列表
      *
@@ -42,6 +50,12 @@ public interface SightService {
     void update(String name, int rank);
 
     /**
+     *  更新景点数据
+     *
+     */
+    void updateAll(Sight sight);
+
+    /**
      *  更新景点评分与评分人数
      *
      */
@@ -56,8 +70,25 @@ public interface SightService {
     /**
      *  推荐景点
      */
-    List<Map.Entry<Sight, Double>> getRecommend(String userName);
+    List<Map.Entry<Sight, Double>> getRecommend(String userName, Map<String, Double> locationScore);
 
     Map<String, Object> getSimilar(String userName);
+
+    /**
+     *  获取景点与当前位置的距离并排序
+     * @param location
+     * @return
+     */
+    List<Distance> getDistance(BaiDuLocation location);
+
+
+    /**
+     *  根据距离信息对景点进行距离得分比例计算
+     * @param distances
+     * @return
+     */
+    Map<String,Double> getDistanceScore(List<Distance> distances);
+
+
 
 }

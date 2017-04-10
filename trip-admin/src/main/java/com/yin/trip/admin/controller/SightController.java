@@ -1,6 +1,7 @@
 package com.yin.trip.admin.controller;
 
 import com.yin.trip.admin.entity.Click;
+import com.yin.trip.admin.entity.Distance;
 import com.yin.trip.admin.entity.Score;
 import com.yin.trip.admin.entity.Sight;
 import com.yin.trip.admin.service.ClickService;
@@ -8,6 +9,8 @@ import com.yin.trip.admin.service.ScoreService;
 import com.yin.trip.admin.service.SightService;
 import com.yin.trip.admin.service.UserService;
 
+import com.yin.trip.common.entity.BaiDuLocation;
+import com.yin.trip.common.util.BaiDuApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/sight")
-@SessionAttributes("userName")
+
 public class SightController {
 
     @Autowired
@@ -44,16 +47,29 @@ public class SightController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping
-    public String page(String info, String error, ModelMap modelMap,
+    public String page(String info, String error,String type, ModelMap modelMap,
                        String page, HttpSession session) {
 
         modelMap.addAttribute("info", info);
+
         modelMap.addAttribute("error", error);
 
 
 
-        //访客模式
-        if(session.getAttribute("userName") == null) {
+        Map<String, String> distanceMap = (Map<String, String>)session.getAttribute("distanceMap");
+
+        modelMap.addAttribute("distanceMap", distanceMap);
+
+
+        if(session.getAttribute("userName") == null && type.equals("recommend")) {
+            modelMap.addAttribute("error", "访客模式不支持综合推荐");
+        }
+
+        //访客模式不支持综合推荐,采用景点排名
+        if(type.equals("rank") || (session.getAttribute("userName") == null && type.equals("recommend"))) {
+
+            //推荐类型
+            modelMap.addAttribute("type", "rank");
 
             //查到的总用户数
             int sum = sightService.getCount();
@@ -84,7 +100,10 @@ public class SightController {
 
             modelMap.addAttribute("list", list);
             modelMap.addAttribute("currentPage", Integer.parseInt(page));
-        } else {
+        } else if(type.equals("recommend")){
+
+            //推荐类型
+            modelMap.addAttribute("type", type);
 
             String userName = session.getAttribute("userName").toString();
             List<String> recommend;
@@ -92,7 +111,8 @@ public class SightController {
             if (null == page) {
                 page = "1";
                 //推荐
-                List<Map.Entry<Sight, Double>> recommendSight = sightService.getRecommend(userName);
+                Map<String, Double> locationScore = (Map<String, Double>)session.getAttribute("locationScore");
+                List<Map.Entry<Sight, Double>> recommendSight = sightService.getRecommend(userName, locationScore);
 
                 recommend = new ArrayList<String>();
 
@@ -133,13 +153,54 @@ public class SightController {
             //排名不能为0
             List<Sight> list = new ArrayList<Sight>();
 
-            for(int j = 0; j < pageSize ; j++) {
+            for(int j = 0; j < pageSize && startRow + j < sum; j++) {
                 list.add(sightService.getSightByName(recommend.get(startRow + j)));
             }
 
             modelMap.addAttribute("list", list);
             modelMap.addAttribute("currentPage", Integer.parseInt(page));
 
+
+        } else {        //按照景点位置从近到远
+            //推荐类型
+            modelMap.addAttribute("type", type);
+
+            //获取景点从近到远
+            List<Distance> result = (List<Distance>)session.getAttribute("distance");
+
+            //查到的总用户数
+            int sum = result.size();
+            int pageSize = 15;//默认为15
+
+            modelMap.addAttribute("sum", sum);
+
+            //总页数
+            int pageTimes;
+            if (sum % pageSize == 0) {
+                pageTimes = sum / pageSize;
+            } else {
+                pageTimes = sum / pageSize + 1;
+            }
+
+            modelMap.addAttribute("pageTimes", pageTimes);
+
+            //页面初始的时候page没有值
+            if (null == page) {
+                page = "1";
+            }
+
+            //每页开始的第几条记录
+            int startRow = (Integer.parseInt(page) - 1) * pageSize;
+
+            //排名不能为0
+            List<Sight> list = new ArrayList<Sight>();
+
+            for (int i = 0; i < pageSize && startRow + i < sum; i++) {
+                list.add(result.get(startRow + i).getSight());
+            }
+
+            modelMap.addAttribute("list", list);
+            modelMap.addAttribute("currentPage", Integer.parseInt(page));
 
         }
 
@@ -248,10 +309,39 @@ public class SightController {
 
     }
 
+    @RequestMapping("/getTime")
+    @ResponseBody
+    public List<String> getTime(double latitude,double longitude,double localLatitude,double localLongitude){
+
+        List<String> types = new ArrayList<String>();
+        List<String> result = new ArrayList<String>();
+
+        types.add("driving");        //驾车
+        types.add("walking");        //步行
+        types.add("transit");        //公交
+
+        BaiDuLocation location = new BaiDuLocation();
+        BaiDuLocation destination = new BaiDuLocation();
+
+        location.setLat(localLatitude);
+        location.setLng(localLongitude);
+
+        destination.setLat(latitude);
+        destination.setLng(longitude);
+
+        for(String type : types) {
+            result.add(BaiDuApi.getTime(location, destination, type));
+        }
+
+        return result;
+    }
+
     @RequestMapping("/go")
     public String goSight(String name, ModelMap modelMap) {
 
         Sight sight = sightService.getSightByName(name);
+        modelMap.put("sight", sight);
+
 
         return "/go";
     }

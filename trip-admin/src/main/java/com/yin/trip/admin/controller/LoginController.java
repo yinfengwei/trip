@@ -1,9 +1,12 @@
 package com.yin.trip.admin.controller;
 
+import com.yin.trip.admin.entity.Distance;
 import com.yin.trip.admin.entity.Location;
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.LocationService;
+import com.yin.trip.admin.service.SightService;
 import com.yin.trip.admin.service.UserService;
+import com.yin.trip.common.entity.BaiDuLocation;
 import com.yin.trip.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +23,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yinfeng on 2017/3/10 0010.
  * 登录控制
  */
 @Controller
-@SessionAttributes("userName")
+
 public class LoginController {
 
     @Autowired
@@ -34,6 +40,9 @@ public class LoginController {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private SightService sightService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -53,6 +62,28 @@ public class LoginController {
         map.addAttribute("info", info);
         map.addAttribute("lon", lon);
         map.addAttribute("lat", lat);
+
+
+        BaiDuLocation location = new BaiDuLocation();
+
+        location.setLat(Double.parseDouble(lat));
+        location.setLng(Double.parseDouble(lon));
+
+        //获取景点距离数据并保存
+        List<Distance> result = sightService.getDistance(location);
+
+        Map<String, String> distances = new HashMap<String, String>();
+
+        for(Distance distance : result) {
+            distances.put(distance.getSight().getName(), String.format("%.1f",distance.getDistance()/1000));
+        }
+
+        Map<String, Double> locationScore = sightService.getDistanceScore(result);
+
+
+        session.setAttribute("distance", result);
+        session.setAttribute("distanceMap", distances);
+        session.setAttribute("locationScore", locationScore);
 
 
      //   HttpSession session = request.getSession(false);
@@ -106,7 +137,7 @@ public class LoginController {
             return "/login";
         }
 
-        session.removeAttribute("userName");
+        session.setAttribute("userName",null);
 
         return "/login";
     }

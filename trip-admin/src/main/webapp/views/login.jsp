@@ -19,6 +19,7 @@
 
 </head>
 <body style="background-color: #E4B89B">
+
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
     <div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
 
@@ -35,7 +36,7 @@
         <br>
         <div>
             <p style="font-size: 18px;float: right">不想登录
-                <a href="${ctx}/trip-admin/sight" style="font-size: 18px;text-align: center;">随便瞧瞧</a>
+                <a href="${ctx}/trip-admin/sight?type=rank" style="font-size: 18px;text-align: center;">随便瞧瞧</a>
             </p>
         </div>
     </div>

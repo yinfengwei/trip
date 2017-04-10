@@ -1,6 +1,7 @@
 package com.yin.trip.admin.service.impl;
 
 import com.yin.trip.admin.dao.SightDao;
+import com.yin.trip.admin.entity.Distance;
 import com.yin.trip.admin.entity.Score;
 import com.yin.trip.admin.entity.Sight;
 import com.yin.trip.admin.entity.User;
@@ -9,6 +10,8 @@ import com.yin.trip.admin.service.ScoreService;
 import com.yin.trip.admin.service.SightService;
 import com.yin.trip.admin.service.UserService;
 import com.yin.trip.admin.util.Algorithm;
+import com.yin.trip.common.entity.BaiDuLocation;
+import com.yin.trip.common.util.BaiDuApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +68,20 @@ public class SightServiceImpl implements SightService{
         return sightDao.getSights(map);
     }
 
+//    /**
+//     * 获取景点列表
+//     *
+//     * @param id
+//     */
+//    @Override
+//    public List<Sight> getSightsById(int id) {
+//        Map<String, Object> map = new HashMap<String, Object>();
+//
+//        map.put("id", id);
+//
+//        return sightDao.getSights(map);
+//    }
+
     /**
      * 获取景点列表
      */
@@ -111,6 +128,16 @@ public class SightServiceImpl implements SightService{
     }
 
     /**
+     * 更新景点数据
+     *
+     * @param sight
+     */
+    @Override
+    public void updateAll(Sight sight) {
+        sightDao.update(sight);
+    }
+
+    /**
      * 更新景点评分与评分人数
      *
      * @param name
@@ -142,9 +169,10 @@ public class SightServiceImpl implements SightService{
 
     /**
      * 推荐景点
+     * //获取每个景点的距离比例，距离得分为2.5分比例
      */
     @Override
-    public List<Entry<Sight, Double>> getRecommend(String userName) {
+    public List<Entry<Sight, Double>> getRecommend(String userName, Map<String, Double> locationScore) {
 
         //1、获得用户相似度
         Map<String,Object> similar = getSimilar(userName);
@@ -157,6 +185,7 @@ public class SightServiceImpl implements SightService{
         //获取每个景点的得分
         Map<Sight,Double> recommend = new HashMap<Sight, Double>();
 
+
         //用户曾经评论的景点赋值为0
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("userName", userName);
@@ -164,12 +193,13 @@ public class SightServiceImpl implements SightService{
         List<Score> scores = scoreService.getScoreList(map);
         List<String> sightName = new ArrayList<String>();
 
+        //已经去过的景点
         for(Score score : scores) {
-            recommend.put(getSightByName(score.getSightName()), 0D);
+            recommend.put(getSightByName(score.getSightName()), locationScore.get(score.getSightName()) * 2);
             sightName.add(score.getSightName());
 
 //            sights.remove(getSightByName(score.getSightName()));
-            logger.info("景点：" + getSightByName(score.getSightName()).getName() + "为0");
+            logger.info("景点：" + getSightByName(score.getSightName()).getName() + "只有位置得分为 : " + locationScore.get(score.getSightName()) * 2);
         }
 
 //        logger.info("景点后总数：" + recommend.size() + recommend.containsKey(getSightByName("世界之窗")));
@@ -190,19 +220,24 @@ public class SightServiceImpl implements SightService{
             //携程得分80%，用户平均评分 40%，如果有用户评分则占1
             if (sight.getUserScore() == 0) {
 
-                //携程评价总数最多为15615,以10为底，按照评价人数进行得分的筛选比例
+                double weight = 0;
+
+                //携程评价总数最多为15615,以10为底，按照评价人数进行得分的筛选比例,权重0.2 - 1
                 if (sight.getSum() < 10) {
-                    recommendScore = sight.getScore() * 0.1;
+                    weight = 0.2;
                 } else {
 
-                    recommendScore = sight.getScore() * 0.1 * (Math.log(sight.getSum()) / Math.log(10) + 1);
+                    weight = 0.2 * (Math.log(sight.getSum()) / Math.log(10) + 1);
 
                 }
+                //添加冷启动占分比例
+                recommendScore += (weight * sight.getScore())/5 * 2;
 
+                //添加位置得分
+                recommendScore += locationScore.get(sight.getName()) * 2;
 
             } else {
                 //被评分
-
                 Map<String, Object> sightMap = new HashMap<String, Object>();
 
                 sightMap.put("sightName", sight.getName());
@@ -220,11 +255,18 @@ public class SightServiceImpl implements SightService{
                     }
                 }
 
-                //如果评分为0 ，则以用户平均得分为准80%
+                //如果评分为0 ，则以用户平均得分为准比例为2.5
                 if (recommendScore == 0) {
 
-                    recommendScore += sight.getUserScore() * 0.6;
+                    recommendScore += sight.getUserScore()/5 * 2;
+                } else {
+                    //计算相似度得分
+                    recommendScore = recommendScore/5 * 3;
+
+
                 }
+
+                recommendScore += locationScore.get(sight.getName()) * 2;
             }
 
             recommend.put(sight, recommendScore);
@@ -247,13 +289,13 @@ public class SightServiceImpl implements SightService{
         });
 
 
-        for (int i = 0; i < enList.size(); i++) {
-
-           Entry<Sight, Double> entry  = enList.get(i);
-
-
-           System.out.println(entry.getKey().getName() + entry.getValue());
-        }
+//        for (int i = 0; i < enList.size(); i++) {
+//
+//           Entry<Sight, Double> entry  = enList.get(i);
+//
+//
+//           System.out.println(entry.getKey().getName() + entry.getValue());
+//        }
 
 
 //        return enList.get(enList.size() - 1).getKey();
@@ -315,33 +357,62 @@ public class SightServiceImpl implements SightService{
                 }
             }
 
-            System.out.println("获得矩阵为");
-            for (i = 0; i < num; i++) {
-                for (j = 0; j < 3; j++) {
-                    System.out.print(userList[i][j] + " ");
-                }
-                System.out.println();
-            }
+//            System.out.println("获得矩阵为");
+//            for (i = 0; i < num; i++) {
+//                for (j = 0; j < 3; j++) {
+//                    System.out.print(userList[i][j] + " ");
+//                }
+//                System.out.println();
+//            }
 
             //计算相似度,最后一个是原来的用户不需要计算
             for (i = 0; i < num - 1 ; i++) {
                 result.put(userNames.get(i), getUserSimilar(userList[i],userList[num - 1]));
-                System.out.println(userNames.get(i) + "相似度为" + result.get(userNames.get(i)));
+//                System.out.println(userNames.get(i) + "相似度为" + result.get(userNames.get(i)));
             }
 
 
 
         } else {
-
+            //若点击用户集不为空则用户注册信息中按照年龄、类型、性别可作为辅助分析，点击数据以及评分3分以上为主要分析
             //获取评分表
             List<String> scoreUserNames = scoreService.getSimUserByName(userName,3,5);
+
+            //1.1. 获得与用户相关的用户(类型、位置、评分、点击) 一一对应
+            Map<String, Integer> similarUser = new HashMap<String, Integer>();
+
+            //先添加该用户
+            similarUser.put(userName, 0);
+
+            int count = 1;
+            //添加与该用户评分过同个项目3分以上的用户
+            for (String user : scoreUserNames) {
+                similarUser.put(user,count);
+                count++;
+            }
+            //添加与该用户点击过同个项目的用户，去重
+            for (String user : clickUserNames) {
+                if (!similarUser.containsKey(user)) {
+                    similarUser.put(user,count);
+                    count++;
+                }
+            }
+
+            logger.info("相似用户数目（包括该用户）:" + similarUser.size());
+
+            //获取相关用户中年龄、类型、性别与该用户相同的数据
+            Map<String, List<String>> ageChart = userService.getUserListByAge(similarUser);
+
+            Map<String, List<String>> typeChart = userService.getUserListByType(similarUser);
+
+            Map<String, List<String>> sexChart = userService.getUserListBySex(similarUser);
 
             Map<String, List<String>> scoreChart = scoreService.getScoreChart(userName, 3, 5);
 
             Map<String, List<String>> clickChart = clickService.getClickChart(userName);
 
             //综合两个相似度
-            Map<String, Object> similarByScore = Algorithm.getSimilar(userName,scoreUserNames,scoreChart, clickUserNames, clickChart);
+            Map<String, Object> similarByScore = Algorithm.getSimilar(userName,similarUser,scoreChart,clickChart, ageChart, typeChart ,sexChart);
 
 //            Map<String, Object> similarByClick = Algorithm.getSimilar(userName,clickUserNames,clickChart);
 
@@ -496,5 +567,81 @@ public class SightServiceImpl implements SightService{
 
         logger.info("sim = " + sim );
         return sim;
+    }
+
+    /**
+     * 获取景点与当前位置的距离并排序
+     *
+     * @param location
+     * @return
+     */
+    @Override
+    public List<Distance> getDistance(BaiDuLocation location) {
+
+        List<Distance> result = new ArrayList<Distance>();
+
+        //获取所有景点数据
+        for(Sight sight : getSights()) {
+
+            BaiDuLocation destination = new BaiDuLocation();
+
+            destination.setLng(Double.parseDouble(sight.getLongitude()));
+            destination.setLat(Double.parseDouble(sight.getLatitude()));
+
+            //计算距离
+            Distance distance = new Distance();
+
+            distance.setSight(sight);
+            distance.setDistance(BaiDuApi.distance(location, destination));
+
+
+            result.add(distance);
+
+
+        }
+
+        //排序
+        Collections.sort(result, new Comparator<Distance>() {
+            @Override
+            public int compare(Distance o1, Distance o2) {
+                //按照景点的距离进行升序排列
+                if(o1.getDistance() > o2.getDistance()){
+                    return 1;
+                }
+                if(o1.getDistance() == o2.getDistance()){
+                    return 0;
+                }
+                return -1;
+            }
+        });
+        return result;
+    }
+
+
+    /**
+     * 根据距离信息对景点进行距离得分比例计算
+     *
+     * @param distances
+     * @return
+     */
+    @Override
+    public Map<String, Double> getDistanceScore(List<Distance> distances) {
+
+        //获取最大值与最小值
+        double maxDistance = distances.get(distances.size() - 1).getDistance();
+        double minDistance = distances.get(0).getDistance();
+
+//        logger.info("max :" + maxDistance);
+//        logger.info("min : " + minDistance);
+        Map<String, Double> result = new HashMap<String, Double>();
+
+        for (Distance distance : distances) {
+            double qa = 1 - (distance.getDistance() - minDistance)/(maxDistance - minDistance);
+//            logger.info(distance.getSight().getName() + ":" + qa);
+            result.put(distance.getSight().getName(), qa);
+        }
+
+
+        return result;
     }
 }

@@ -19,11 +19,24 @@ public class HttpUtil {
         BufferedReader in = null;
 
         try {
+            String sendUrl;
+            if (param != null) {
+                sendUrl = url + "?" + param;
+            }else {
+                sendUrl = url;
+            }
 
-            URL realUrl = new URL(url + "?" + param);
+
+            System.out.println(sendUrl);
+
+            URL realUrl = new URL(sendUrl);
+
+
 
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(3000);
             // 设置通用的请求属性
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
@@ -33,10 +46,10 @@ public class HttpUtil {
             connection.setRequestProperty("contentType", "text/javascript;charset=utf-8");
             // 获取所有响应头字段
             Map<String, List<String>> map = connection.getHeaderFields();
-            // 遍历所有的响应头字段
-            for (String key : map.keySet()) {
-                   System.out.println(key + "--->" + map.get(key));
-            }
+//            // 遍历所有的响应头字段
+//            for (String key : map.keySet()) {
+//                   System.out.println(key + "--->" + map.get(key));
+//            }
 
 
             // 建立实际的连接

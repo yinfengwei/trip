@@ -26,31 +26,20 @@ public class Algorithm {
      * @return
      */
     public static Map<String, Object> getSimilar(String userName,
-                                                 List<String> userNames,
-                                                 Map<String, List<String>> chart,
-                                                 List<String> userNames1,
-                                                 Map<String, List<String>> chart1){
+                                                 Map<String,Integer> userNames,
+                                                 Map<String, List<String>> scoreChart,
+                                                 Map<String, List<String>> clickChart,
+                                                 Map<String, List<String>> ageChart,
+                                                 Map<String, List<String>> typeChart,
+                                                 Map<String, List<String>> sexChart){
 
         //1.1. 获得与用户相关的用户(类型、位置、评分、点击) 一一对应
-        similarUser = new HashMap<String, Integer>();
+        similarUser = userNames;
 
-        //先添加该用户
-        similarUser.put(userName, 0);
-
-        int count = 1;
-        //添加与该用户评分过同个项目的用户
-        for (String user : userNames) {
-            similarUser.put(user,count);
-            count++;
-        }
-
-        for (String user : userNames1) {
-            similarUser.put(user,count);
-            count++;
-        }
+        displaySimilar();
 
         //建立表，数量必须大于1
-        userSum = count;
+        userSum = similarUser.size();
         System.out.println("获取与用户一起评分过得用户总数" + userSum);
         user = new double[userSum][userSum];
         itemSum = new int[userSum];
@@ -64,10 +53,19 @@ public class Algorithm {
             }
             itemSum[i] = 0;
         }
-
+//        display();
         //通过倒排表计算得分,评分项比重为2 ，点击项比重为1
-        addScore(chart, 2);
-        addScore(chart1, 1);
+        System.out.println("添加评分倒排表");
+        addScore(scoreChart, 5);
+        System.out.println("添加点击倒排表");
+        addScore(clickChart, 3);
+        System.out.println("添加年龄辅助用户表");
+        addScoreByParam(ageChart, 1);
+        System.out.println("添加类型辅助用户表");
+        addScoreByParam(typeChart, 1);
+        System.out.println("添加性别辅助用户表");
+        addScoreByParam(sexChart, 1);
+
 
 
 //        //从评分倒排表填充数据
@@ -101,8 +99,12 @@ public class Algorithm {
         //返回结果
         Map<String, Object> similar = new HashMap<String, Object>();
 
-        for (String name : userNames) {
-            similar.put(name, user[0][similarUser.get(name)]);
+        for (String name : userNames.keySet()) {
+            //相似用户不包括该用户本身
+            if(!name.equals(userName)) {
+                System.out.println(name + "得分" + user[0][similarUser.get(name)] );
+                similar.put(name, user[0][similarUser.get(name)]);
+            }
         }
 
 
@@ -141,7 +143,39 @@ public class Algorithm {
                     }
                 }
             }
-            display();
+//            display();
+        }
+    }
+
+    /**
+     *  根据用户列表进行计算
+     * @param chart
+     */
+    private static void addScoreByParam(Map<String, List<String>> chart, int score){
+
+        //非空
+        if (chart != null) {
+            //从用户列表填充数据
+            for(String key : chart.keySet()) {
+                List<String> tempList = chart.get(key);
+
+                //用户列表进行辅助添加
+                for(String tempUser : tempList) {
+                    int a = similarUser.get(key);
+                    System.out.println("tempUser" + tempUser);
+                    int b = similarUser.get(tempUser);
+
+
+                    System.out.println("增加的坐标为:" + a + "," + b);
+                    //获取用户名，然后map对应坐标
+                    user[a][b] += score;
+                    user[b][a] += score;
+                    itemSum[a] += score;
+                    itemSum[b] += score;
+                }
+            }
+
+//            display();
         }
     }
 
@@ -172,9 +206,21 @@ public class Algorithm {
 
             for (int j = 0; j < userSum; j++) {
 //                user[0][j] = user[0][j]/Math.sqrt(itemSum[0] * itemSum[j]);
-                System.out.print(user[0][j] + " ");
+                System.out.print(user[i][j] + " ");
             }
             System.out.println( "  =" + itemSum[0]);
        }
+    }
+
+    /**
+     *  测试用显示similar 表
+     *
+     */
+    private static void displaySimilar(){
+        System.out.println( "displaySimilar" );
+        for(String key : similarUser.keySet()) {
+
+            System.out.println( "key:" + key);
+        }
     }
 }

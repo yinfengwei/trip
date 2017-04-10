@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="${ctx}/resource/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css" href="${ctx}/resource/css/bootstrap-select.css">
 <link rel="stylesheet" type="text/css" href="${ctx}/resource/css/iconfont.css">
+<link rel="stylesheet" type="text/css" href="${ctx}/resource/css/font2/iconfont.css">
 
 
 <script src="${ctx}/resource/js/jquery-3.1.1.min.js"></script>

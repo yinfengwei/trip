@@ -6,26 +6,29 @@
         INSERT INTO t_sight(
         name, score, address, type, rank, play_time,phone,
          website, open_time, ticket, introduce, tips, imgs, sum,
-          user_score, user_sum
+          user_score, user_sum, longitude, latitude
          ) VALUES (
         #{name}, #{score}, #{address}, #{type}, #{rank}, #{playTime},#{phone},
         #{website}, #{openTime}, #{ticket}, #{introduce}, #{tips}, #{imgs}, #{sum},
-        #{userScore}, #{userSum})
+        #{userScore}, #{userSum}, #{longitude}, #{latitude})
     </insert>
 
     <select id="getSightByParam" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum
+         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum, longitude, latitude
          FROM t_sight WHERE name = #{name}
     </select>
 
     <select id="getSights" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-        website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum
+        website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum, longitude, latitude
         FROM t_sight
         <if test="start!=null and start!=''">
             WHERE rank BETWEEN #{start} AND #{end}
             ORDER BY rank
+        </if>
+        <if test="id!=null and id!=''">
+            WHERE id >= #{id}
         </if>
 
     </select>
@@ -35,7 +38,9 @@
         SET
         rank = #{rank},
         user_score = #{userScore},
-        user_sum = #{userSum}
+        user_sum = #{userSum},
+        longitude = #{longitude},
+        latitude = #{latitude}
         WHERE name = #{name}
     </update>
 

@@ -23,6 +23,8 @@ public class Sight {
     private int sum;                //评论人数
     private float userScore;        //用户平均评分
     private long userSum;           //用户评分总数
+    private String longitude;           //经度
+    private String latitude;           //纬度
 
     public int getId() {
         return id;
@@ -158,5 +160,21 @@ public class Sight {
 
     public void setUserSum(long userSum) {
         this.userSum = userSum;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 }

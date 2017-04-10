@@ -73,4 +73,41 @@ public class UserTest {
             System.out.println(user);
         }
     }
+
+    @Test
+    public void testGetUserListByAge(){
+
+        Map<String, Integer> similarUser = new HashMap<String, Integer>();
+
+        similarUser.put("yin",0);
+
+        Map<String, List<String>> result = userService.getUserListByAge(similarUser);
+//        logger.info("result : "  +  result.size());
+
+        System.out.println(result.get("yin"));
+    }
+    @Test
+    public void testGetUserListByType(){
+
+        Map<String, Integer> similarUser = new HashMap<String, Integer>();
+
+        similarUser.put("yin",0);
+
+        Map<String, List<String>> result = userService.getUserListByType(similarUser);
+//        logger.info("result : "  +  result.size());
+
+        System.out.println(result.get("yin").size());
+    }
+    @Test
+    public void testGetUserListBySex(){
+
+        Map<String, Integer> similarUser = new HashMap<String, Integer>();
+
+        similarUser.put("yin",0);
+
+        Map<String, List<String>> result = userService.getUserListBySex(similarUser);
+//        logger.info("result : "  +  result.size());
+
+        System.out.println(result.get("yin"));
+    }
 }

@@ -99,6 +99,113 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 根据参数获取用户信息
+     *
+     * @param similarUser
+     * @return
+     */
+    @Override
+    public Map<String, List<String>> getUserListByAge(Map<String, Integer> similarUser) {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+
+        //遍历key
+        for(String key : similarUser.keySet()) {
+
+            //获得用户名
+            User user = getUserByUseName(key);
+            List<String> userList = new ArrayList<String>();
+
+            Map<String, Object> param = new HashMap<String, Object>();
+
+            param.put("age" , user.getAge());
+
+            for(User tempUser : getUserList(param)) {
+
+                //不能包含该用户且必须在用户列表中
+                if ((!key.equals(tempUser.getUserName()))
+                        && similarUser.containsKey(tempUser.getUserName())){
+                    userList.add(tempUser.getUserName());
+                }
+            }
+
+            result.put(key, userList);
+
+        }
+
+        return result;
+    }
+
+
+
+    /**
+     * 获取相关用户类型相同的用户列表
+     *
+     * @param similarUser
+     * @return
+     */
+    @Override
+    public Map<String, List<String>> getUserListByType(Map<String, Integer> similarUser) {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+
+        //遍历key
+        for(String key : similarUser.keySet()) {
+            //获得用户名
+            User user = getUserByUseName(key);
+            List<String> userList = new ArrayList<String>();
+
+            Map<String, Object> param = new HashMap<String, Object>();
+
+            param.put("type" , user.getType());
+
+            for(User tempUser : getUserList(param)) {
+                //不能包含该用户
+                if ((!key.equals(tempUser.getUserName()))
+                        && similarUser.containsKey(tempUser.getUserName())){
+                    userList.add(tempUser.getUserName());
+                }
+            }
+
+            result.put(key, userList);
+
+        }
+        return result;
+    }
+
+    /**
+     * 获取相关用户性别相同的用户列表
+     *
+     * @param similarUser
+     * @return
+     */
+    @Override
+    public Map<String, List<String>> getUserListBySex(Map<String, Integer> similarUser) {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+
+        //遍历key
+        for(String key : similarUser.keySet()) {
+            //获得用户名
+            User user = getUserByUseName(key);
+            List<String> userList = new ArrayList<String>();
+
+            Map<String, Object> param = new HashMap<String, Object>();
+
+            param.put("sex" , user.getSex());
+
+            for(User tempUser : getUserList(param)) {
+                //不能包含该用户
+                if ((!key.equals(tempUser.getUserName()))
+                        && similarUser.containsKey(tempUser.getUserName())){
+                    userList.add(tempUser.getUserName());
+                }
+            }
+
+            result.put(key, userList);
+
+        }
+        return result;
+    }
+
+    /**
      * 根据用户名获取与该用户年龄、性别、类型任一方面相关的用户类表
      *
      * @param name
@@ -161,6 +268,8 @@ public class UserServiceImpl implements UserService {
 
         return result;
     }
+
+
 
     /**
      * 更新用户信息

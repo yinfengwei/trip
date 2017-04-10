@@ -1,11 +1,10 @@
 package com.yin.trip.admin;
 
+import com.yin.trip.admin.entity.Distance;
 import com.yin.trip.admin.entity.Sight;
 import com.yin.trip.admin.service.SightService;
-import com.yin.trip.common.util.StringUtil;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
+import com.yin.trip.common.entity.BaiDuLocation;
+import com.yin.trip.common.util.BaiDuApi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yinfeng on 2017/3/18 0018.
@@ -55,6 +51,8 @@ public class SightTest {
         sight.setImgs("");
         sight.setSum(2);
         sight.setUserScore(4.5f);
+        sight.setLongitude("113.937405");
+        sight.setLatitude("22.532493");
 
         sightService.insertData(sight);
 
@@ -94,11 +92,115 @@ public class SightTest {
 
     @Test
     public void testRecommend(){
-        String userName = "test";
+        String userName = "yin";
 
-        sightService.getRecommend(userName);
-//        sightService.getSimilar(userName);
+//        sightService.getRecommend(userName);
+        sightService.getSimilar(userName);
     }
+
+    @Test
+    public void testGetDistance(){
+        Sight sight = sightService.getSightByName("世界之窗");
+
+        BaiDuLocation location = new BaiDuLocation();
+
+        location.setLat(Double.parseDouble(sight.getLatitude()));
+        location.setLng(Double.parseDouble(sight.getLongitude()));
+
+        BaiDuLocation destination = new BaiDuLocation();
+
+        destination.setLat(22.532493);
+        destination.setLng(113.937405);
+
+        logger.info(BaiDuApi.distance(location, destination) + "");
+
+
+    }
+
+    @Test
+    public void testGetDistanceList(){
+        BaiDuLocation destination = new BaiDuLocation();
+
+        destination.setLat(22.532493);
+        destination.setLng(113.937405);
+
+        List<Distance> result = sightService.getDistance(destination);
+
+        for(Distance distance : result) {
+            logger.info(distance.getSight().getName() + ":" + distance.getDistance());
+        }
+    }
+
+    @Test
+    public void testGetDistanceScore(){
+        BaiDuLocation destination = new BaiDuLocation();
+
+        destination.setLat(22.532493);
+        destination.setLng(113.937405);
+
+        List<Distance> result = sightService.getDistance(destination);
+
+        Map<String, Double> scores = sightService.getDistanceScore(result);
+
+//        for(String sight : scores.keySet()) {
+//            logger.info(sight + ":" + scores.get(sight));
+//        }
+
+//        for (Map.Entry<Sight, Double> entry : scores.entrySet()) {
+//            logger.info("key= " + entry.getKey() + " and value= " + entry.getValue());
+//        }
+    }
+
+    @Test
+    public void testGetTime(){
+        BaiDuLocation location = new BaiDuLocation();
+
+        location.setLat(22.532493);
+        location.setLng(113.937405);
+
+        Sight sight = sightService.getSightByName("世界之窗");
+
+        BaiDuLocation destination = new BaiDuLocation();
+
+        destination.setLng(Double.parseDouble(sight.getLongitude()));
+        destination.setLat(Double.parseDouble(sight.getLatitude()));
+
+        String type = "driving";
+
+        BaiDuApi.getTime(location, destination,type);
+
+
+
+    }
+
+
+
+//    @Test
+//    public void testUpdateLonAndLat(){
+//
+////        List<Sight> list = sightService.getSightsById(506);
+//
+//
+//
+////        System.out.println(location.getLng() + " ," + location.getLat());
+//
+////        for(Sight sight : list) {
+//
+//            Sight sight = sightService.getSightByName("罗湖文化公园");
+//            //获取景点位置
+////            BaiDuLocation location = BaiDuApi.translate(sight.getAddress());
+//
+//            sight.setLongitude("114.13310290803195");
+//            sight.setLatitude("22.55175897294979");
+//
+//            sightService.updateAll(sight);
+//
+//            logger.info("更新" + sight.getName() + "位置信息成功");
+//
+////        }
+//
+//
+//    }
 //    //测试更新景点排名
 //    @Test
 //    public void testUpdateRank(){

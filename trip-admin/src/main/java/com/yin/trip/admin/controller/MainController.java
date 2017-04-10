@@ -16,12 +16,19 @@ import javax.servlet.http.HttpSession;
 public class MainController {
     //进入页面
     @RequestMapping("/main")
-    public String page(String error, String info, ModelMap map){
+    public String page(String error, String info, ModelMap map,HttpSession session){
 
         map.addAttribute("info", info);
         map.addAttribute("error", error);
 
 
-        return "main";
+        if(session.getAttribute("userName") == null) {
+            return "login";
+        }else {
+            map.addAttribute("userName", session.getAttribute("userName") );
+            return "main";
+        }
+
+
     }
 }

@@ -11,69 +11,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 
-<%--<html>--%>
-<%--<head>--%>
-    <%--<title>轻松出行</title>--%>
-
-    <%--<jsp:include page="${ctx}/common/head.jsp"></jsp:include>--%>
-
-
-<%--</head>--%>
-<%--<body style="background-color: #E4B89B">--%>
-
-<%--<div class="container" style="margin: auto;max-width: 340px;">--%>
-    <%--<jsp:include page="${ctx}/common/error.jsp"></jsp:include>--%>
-    <%--<h1>景点列表</h1>--%>
-
-    <%--<c:forEach items="${list}" var="data">--%>
-        <%--<p>${data.name}</p>--%>
-
-    <%--</c:forEach>--%>
-
-    <%--<div class="pagging">--%>
-        <%--<div class="left">共${userNum}条记录</div>--%>
-        <%--<div class="right">--%>
-            <%--<c:if test="${currentPage == 1}">--%>
-                <%--<span class="disabled"><< 前一页</span>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${currentPage != 1}">--%>
-                <%--<a href="${ctx}/trip-admin/sight?page=${currentPage-1}"><< 前一页</a>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${currentPage == 1}">--%>
-                <%--<span class="current">1</span>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${currentPage != 1}">--%>
-                <%--<a href="${ctx}/trip-admin/sight?page=1">1</a>--%>
-            <%--</c:if>--%>
-            <%--<%--%>
-                <%--int pageTimes = (Integer)request.getAttribute("pageTimes");--%>
-                <%--for(int i = 1;i < pageTimes; i++)--%>
-                <%--{--%>
-                    <%--request.setAttribute("page", i + 1);--%>
-            <%--%>--%>
-            <%--<c:if test="${currentPage == page}">--%>
-                <%--<span class="current"><%=i+1%></span>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${currentPage != page}">--%>
-                <%--<a href="${ctx}/trip-admin/sight?page=<%=i+1%>"><%=i+1%></a>--%>
-            <%--</c:if>--%>
-            <%--<%} %>--%>
-
-            <%--<c:if test="${currentPage == pageTimes}">--%>
-                <%--<span class="disabled">后一页 >></span>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${currentPage != pageTimes}">--%>
-                <%--<a href="${ctx}/trip-admin/sight?page=${currentPage+1}">后一页 >></a>--%>
-            <%--</c:if>--%>
-        <%--</div>--%>
-    <%--</div>--%>
-<%--</div>--%>
-
-<%--</body>--%>
-<%--<script>--%>
-
-<%--</script>--%>
-<%--</html>--%>
 <html>
 <head>
     <title>轻松出行</title>
@@ -87,18 +24,19 @@
         }
         body{
             background-color: #EBEBEB;
+            font-size: 0.5em;
         }
         .tag_part{
             margin-bottom: 1em;
             border-bottom: 1px #CFCFCF solid;
         }
         .leftWord{
-            width: 75%;
+            width: 70%;
             float: left;
-
+            font-size: 1.5em;
         }
         .rightPic{
-            width: 25%;
+            width: 30%;
             float: left;
         }
         .footerDir{
@@ -111,14 +49,14 @@
             padding-bottom: 0;
             box-sizing: border-box;
             background-color: white;
-            font-size: 0.5em;
+            /*font-size: 0.5em;*/
         }
         .place{
-            font-size: 2em;
+            font-size: 1.5em;
         }
         .group-purchase,.ticket{
             display: inline-block;
-            font-size: 1em;
+            font-size: 0.7em;
             background-color: red;
             color: white;
             margin-left:1em;
@@ -136,18 +74,19 @@
         }
         .icon-xingxing:before{
             color: #EEAD0E;
-            font-size: 0.5em;
+            font-size: 1em;
         }
         p{
             margin-bottom: 0.6em;
-            font-size: 2em;
+            font-size: 1.5em;
         }
         .price{
             color: #EE799F;
+            /*font-size: 4em;*/
         }
         .description .first_des,.description .second_des{
             border: 1px #EEAD0E solid;
-            font-size: 0.8em;
+            font-size: 1.0em;
             color: #EEAD0E;
             line-height: 0.9em;
             padding: 0 0.3em;
@@ -157,7 +96,8 @@
             color: #666666;
         }
         .place_pic{
-            width: 100%;
+            width: 90px;
+            height: 90px;
         }
         .rightPic{
             padding: 0.6em;
@@ -168,15 +108,15 @@
             padding: 0;
         }
         .position{
-            width: 100%;
-            height: 30%;
+            width: 90px;
+            height: 25%;
             background-color: rgba(0,0,0,0.8);
             position: absolute;
             bottom: 0;
         }
         .position{
             color: white;
-            padding: 0;
+            padding: 0.5em 0 0 0;
             text-align:center;
             line-height: 2em;
         }
@@ -191,12 +131,12 @@
             padding:0;
         }
         .footerDir span{
-            width: 24%;
+            width: 48%;
             margin: 0;
             display: inline-block;
             box-sizing: border-box;
             text-align: center;
-            font-size: 2.5em;
+            font-size: 3.0em;
             line-height: 3em;
 
         }
@@ -206,12 +146,40 @@
         .footerDir .icon-ic_pin_drop_px:before{
             font-size: 1.2em;
         }
+        .btn-group { width: 100%; border-top: 1px solid #DDD; border-bottom: 2px solid #DDD;padding:0}
+        button{width: 32.5%; text-align: center; border: 0; border-radius: 0; background-color: inherit; height: 44px; line-height: 44px; font-size: 3em;}
+        .top_tiv_cover{
+            position: fixed;
+            top: 0;
+            background-color: rgba(0,0,0,0.2);
+            width: 100%;
+            height: 7%;
+            line-height: 100%;
+
+        }
+        .right a{
+            width: 20%;
+            display: inline-block;
+        }
+        .right span{
+            width: 20%;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
+<div class="top_tiv_cover">
+
+    <a href="${ctx}/trip-admin/main">
+        <i class="iconfont icon-icon"></i>
+    </a>
+</div>
+
     <div class="container" style="margin: auto;max-width: 340px;" >
+        <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
+
         <div style="margin-top: 10px;margin-left: 10px;margin-right: 10px;height: 15px;">
-            <label style="float: left">用户 ：
+            <label style="float: left;font-size: 3em;">用户 ：
                 <c:if test="${not empty sessionScope.userName}">
                     ${sessionScope.userName}
                 </c:if>
@@ -220,14 +188,29 @@
                 </c:if>
             </label>
 
-            <a href="${ctx}/trip-admin/login" style="float: right">
+            <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 5em;">
                 <c:if test="${not empty userName}">
                     注销登录
                 </c:if>
             </a>
 
         </div>
-        <hr width="100%">
+
+        <%--<hr width="100%">--%>
+
+        <input type="text" value="${type}" id="type" style="display: none">
+        <div class="btn-group">
+            <a href="${ctx}/trip-admin/sight?type=recommend">
+                <button id="recommend">综合排序</button>
+            </a>
+            <a href="${ctx}/trip-admin/sight?type=location">
+                <button id="location">距离从近到远</button>
+            </a>
+            <a href="${ctx}/trip-admin/sight?type=rank">
+                <button id="rank">携程排名</button>
+            </a>
+        </div>
+
         <div class="list">
 
             <c:forEach items="${list}" var="data" varStatus="status">
@@ -235,20 +218,26 @@
                     <div class="tag_part">
                         <div class="leftWord">
                             <p><span class="place">${status.index + 1}.${data.name}</span>
-                            <span>${data.sum}条评论</span>
                             </p>
                             <p>
-                            <span class="xingxing">
-                                <c:forEach var="i" begin="1" end="${data.score}" step="1">
-                                    <i class="iconfont icon-xingxing"></i>
-                                </c:forEach>
-                            </span>
-                                <c:if test="${data.userScore != ''}">
-                                    <span class="price">${data.userScore}分/5分</span>
-                                </c:if>
-                                <c:if test="${data.userScore == ''}">
-                                    <span class="price">携程评分：${data.score}分/5分</span>
-                                </c:if>
+                            <c:if test="${data.userScore != ''}">
+                                <span class="xingxing">
+                                    <c:forEach var="i" begin="1" end="${data.userScore}" step="1">
+                                        <i class="iconfont icon-xingxing"></i>
+                                    </c:forEach>
+                                </span>
+                                <span class="price">${data.userScore}分/5分</span>
+                            </c:if>
+                            <c:if test="${data.userScore == ''}">
+                                <span class="xingxing">
+                                    <c:forEach var="i" begin="1" end="${data.score}" step="1">
+                                        <i class="iconfont icon-xingxing"></i>
+                                    </c:forEach>
+                                </span>
+                                <span class="price">携程：${data.score}分/5分</span>
+
+
+                            </c:if>
                             </p>
 
                             <p><span>${data.address}</span></p>
@@ -257,7 +246,7 @@
                         <div class="rightPic">
                             <div class="rightPic_div">
                                 <img class="place_pic" src="${data.imgs}" onerror="javascript:this.src='${ctx}/trip-admin/resource/img/error.jpg'" alt="图片">
-                                <div class="position"><i class="iconfont icon-ic_pin_drop_px"><span>4.4公里</span></i></div>
+                                <div class="position"><i class="iconfont icon-ic_pin_drop_px"><span>${distanceMap[data.name]}公里</span></i></div>
                             </div>
                         </div>
                         <div class="footerDir">
@@ -267,14 +256,7 @@
                                     去这里
                                 </span>
                             </a>
-                            <span>
-                                <i class="iconfont icon-quzheli"></i>
-                                导航
-                            </span>
-                            <span>
-                                <i class="iconfont icon-ic_pin_drop_px"></i>
-                                搜周边
-                            </span>
+
                             <a href="${ctx}/trip-admin/sight/view?name=${data.name}">
                                 <span>
                                     <i class="iconfont icon-xiangqing"></i>
@@ -305,17 +287,27 @@
             <%--<div class="left">共${userNum}条记录</div>--%>
             <div class="right">
                 <c:if test="${currentPage == 1}">
-                    <span class="disabled" style="font-size: 18px;float: left;"><< 前一页</span>
+                    <span style="font-size: 25px;">${currentPage}</span>
                 </c:if>
                 <c:if test="${currentPage != 1}">
-                    <a href="${ctx}/trip-admin/sight?page=${currentPage-1}" style="font-size: 18px;float: left;"><< 前一页</a>
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=1" style="font-size: 25px;">1 </a>
+                    <c:if test="${currentPage == pageTimes}">
+                        <span style="font-size: 25px;"> ...  </span>
+                    </c:if>
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage-1}" style="font-size: 18px;width: 30px">${currentPage-1}  </a>
                 </c:if>
 
+
                 <c:if test="${currentPage == pageTimes}">
-                    <span class="disabled" style="font-size: 18px;float: right;">后一页 >></span>
+                    <span style="font-size: 25px;">  ${currentPage}  </span>
                 </c:if>
                 <c:if test="${currentPage != pageTimes}">
-                    <a href="${ctx}/trip-admin/sight?page=${currentPage+1}" style="font-size: 18px;float: right;">后一页 >></a>
+
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${currentPage+1}" style="font-size: 25px;">  ${currentPage+1}  </a>
+                    <c:if test="${currentPage == 1}">
+                        <span style="font-size: 25px;"> ...  </span>
+                     </c:if>
+                    <a href="${ctx}/trip-admin/sight?type=${type}&page=${pageTimes}" style="font-size: 25px;float: right;">  ${pageTimes}  </a>
                 </c:if>
             </div>
         </div>
@@ -323,135 +315,19 @@
 
     </div>
 </body>
-<%--<script id="template" type="text/template">--%>
+<script>
+    $(function () {
+        var type = $('#type').val();
 
-    <%--&lt;%&ndash;<c:forEach items="${item}" var="data" varStatus="status" >&ndash;%&gt;--%>
+        if(type == "recommend") {
+            $('#recommend').addClass("btn-primary");
+        } else if (type == "location") {
+            $('#location').addClass("btn-primary");
+        } else {
+            $('#rank').addClass("btn-primary");
+        }
+    })
 
-        <%--<div class="tag_part">--%>
-            <%--<div class="leftWord">--%>
-                <%--<p><span class="place">${status.index + 1}.${data.name}</span><a class="group-purchase" href="">团</a><a class="ticket" href="">票</a></p>--%>
-                <%--<p>--%>
-                    <%--<span class="xingxing">--%>
-                        <%--<c:forEach var="i" begin="1" end="${data.score}" step="1">--%>
-                            <%--<i class="iconfont icon-xingxing"></i>--%>
-                        <%--</c:forEach>--%>
-                    <%--</span>--%>
-                    <%--<span>${data.sum}条评论</span>--%>
-                    <%--<span class="price">${data.score}分/5分</span>--%>
-                    <%--<span>南山区</span>--%>
-                <%--</p>--%>
-                <%--<p class="description"><span class="first_des">深圳市景点第${data.rank}位</span><span class="second_des">${data.type}</span></p>--%>
-            <%--</div>--%>
-            <%--<div class="rightPic">--%>
-                <%--<div class="rightPic_div">--%>
-                    <%--<img class="place_pic" src="${data.imgs}" onerror="javascript:this.src='${ctx}/trip-admin/resource/img/error.jpg'" alt="图片">--%>
-                    <%--<div class="position"><i class="iconfont icon-ic_pin_drop_px"><span>4.4公里</span></i></div>--%>
-                <%--</div>--%>
-            <%--</div>--%>
-            <%--<div class="footerDir">--%>
-                <%--<span>--%>
-                    <%--<i class="iconfont icon-daozheli-copy"></i>--%>
-                    <%--去这里--%>
-                <%--</span>--%>
-                <%--<span>--%>
-                    <%--<i class="iconfont icon-quzheli"></i>--%>
-                    <%--导航--%>
-                <%--</span>--%>
-                <%--<span>--%>
-                    <%--<i class="iconfont icon-ic_pin_drop_px"></i>--%>
-                    <%--搜周边--%>
-                <%--</span>--%>
-                <%--<a href="${ctx}/trip-admin/sight/view?name=${data.name}">--%>
-                   <%--<span>--%>
-                    <%--<i class="iconfont icon-xiangqing"></i>--%>
-                    <%--详情--%>
-                <%--</span>--%>
-                <%--</a>--%>
 
-            <%--</div>--%>
-        <%--</div>--%>
-    <%--&lt;%&ndash;</c:forEach>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</script>&ndash;%&gt;--%>
-<%--<script>--%>
-
-    <%--&lt;%&ndash;function addSight(currentPage) {&ndash;%&gt;--%>
-        <%--&lt;%&ndash;$.ajax({&ndash;%&gt;--%>
-            <%--&lt;%&ndash;type: "POST",&ndash;%&gt;--%>
-            <%--&lt;%&ndash;url: "${ctx}/trip-admin/sight/appendSight",&ndash;%&gt;--%>
-            <%--&lt;%&ndash;data:  {&ndash;%&gt;--%>
-                <%--&lt;%&ndash;"currentPage" : currentPage.toString()&ndash;%&gt;--%>
-            <%--&lt;%&ndash;},&ndash;%&gt;--%>
-            <%--&lt;%&ndash;dataType: "json",&ndash;%&gt;--%>
-            <%--&lt;%&ndash;success: function(data){&ndash;%&gt;--%>
-                <%--&lt;%&ndash;alert(data[0].name);&ndash;%&gt;--%>
-                <%--&lt;%&ndash;&lt;%&ndash;var source = $('#template').html();&ndash;%&gt;&ndash;%&gt;--%>
-          <%--&lt;%&ndash;&lt;%&ndash;//      alert(source);&ndash;%&gt;&ndash;%&gt;--%>
-
-                <%--&lt;%&ndash;&lt;%&ndash;var result = source.replace('${data}',data);&ndash;%&gt;&ndash;%&gt;--%>
-                <%--&lt;%&ndash;&lt;%&ndash;alert(result);&ndash;%&gt;&ndash;%&gt;--%>
-                <%--&lt;%&ndash;&lt;%&ndash;<c:forEach items=${data} var="data" varStatus="status" >&ndash;%&gt;&ndash;%&gt;--%>
-                <%--&lt;%&ndash;var context = {"user": {"name": "tom"}};&ndash;%&gt;--%>
-                <%--&lt;%&ndash;&lt;%&ndash;var source = "Hello, ${this.user.name}";&ndash;%&gt;&ndash;%&gt;--%>
-<%--&lt;%&ndash;////                var scriptlet = jsp.runtime.JspRuntime.compile(source);&ndash;%&gt;--%>
-<%--&lt;%&ndash;////                var result = scriptlet.execute(context);&ndash;%&gt;--%>
-<%--&lt;%&ndash;//                logger.debug(result);&ndash;%&gt;--%>
-            <%--&lt;%&ndash;}&ndash;%&gt;--%>
-        <%--&lt;%&ndash;});&ndash;%&gt;--%>
-    <%--&lt;%&ndash;}&ndash;%&gt;--%>
-
-<%--//    var TemplateManager = {templates: {}};--%>
-<%--//--%>
-<%--//    /**--%>
-<%--//     * @param name--%>
-<%--//     * @return Template--%>
-<%--//     */--%>
-<%--//    TemplateManager.getTemplate = function(name){--%>
-<%--//        return this.templates[name];--%>
-<%--//    };--%>
-<%--//--%>
-<%--//    /**--%>
-<%--//     * @param name--%>
-<%--//     * @param template--%>
-<%--//     * @return Template--%>
-<%--//     */--%>
-<%--//    TemplateManager.setTemplate = function(name, template){--%>
-<%--//        this.templates[name] = template;--%>
-<%--//    };--%>
-<%--//--%>
-<%--//    /**--%>
-<%--//     * @param name--%>
-<%--//     * @param context--%>
-<%--//     * @return Template--%>
-<%--//     */--%>
-<%--//    TemplateManager.evaluate = function(name, context){--%>
-<%--//        if(name != null)--%>
-<%--//        {--%>
-<%--//            if(typeof(jQuery) == "undefined")--%>
-<%--//            {--%>
-<%--//                throw {"name": "ClassNotFoundException", "message": "'jQuery' not found !"};--%>
-<%--//            }--%>
-<%--//--%>
-<%--//            var e = jQuery("script[name=" + name + "]");--%>
-<%--//            var template = this.getTemplate(name);--%>
-<%--//--%>
-<%--//            if(template == null)--%>
-<%--//            {--%>
-<%--//                template = template = jsp.runtime.JspRuntime.compile(e.get(0).text);--%>
-<%--//                this.setTemplate(name, template);--%>
-<%--//            }--%>
-<%--//--%>
-<%--//            if(template != null)--%>
-<%--//            {--%>
-<%--//                var target = e.attr("update");--%>
-<%--//--%>
-<%--//                if(target != null)--%>
-<%--//                {--%>
-<%--//                    var html = template.execute(context);--%>
-<%--//                    jQuery(target).html(html);--%>
-<%--//                }--%>
-<%--//            }--%>
-<%--//        }--%>
-<%--//    };--%>
-
-<%--</script>--%>
+</script>
 </html>

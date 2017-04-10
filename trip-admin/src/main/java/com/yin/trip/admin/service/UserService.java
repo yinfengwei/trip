@@ -40,11 +40,33 @@ public interface UserService {
     List<User> getUserList(Map<String, Object> param);
 
     /**
+     *  获取相关用户年龄段相同的用户列表
+     * @param similarUser
+     * @return
+     */
+    Map<String, List<String>> getUserListByAge(Map<String, Integer> similarUser);
+
+    /**
+     *  获取相关用户类型相同的用户列表
+     * @param similarUser
+     * @return
+     */
+    Map<String, List<String>> getUserListByType(Map<String, Integer> similarUser);
+
+    /**
+     *  获取相关用户性别相同的用户列表
+     * @param similarUser
+     * @return
+     */
+    Map<String, List<String>> getUserListBySex(Map<String, Integer> similarUser);
+
+    /**
      *  根据用户名获取与该用户年龄、性别、类型任一方面相关的用户类表
      * @param name
      * @return
      */
     List<String> getCorrelationUser(String name);
+
 
     /**
      *  更新用户信息

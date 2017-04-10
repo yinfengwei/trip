@@ -46,8 +46,8 @@
                 <label class="control-label">请选择您的性别：</label>
                 <div class="form-group">
                     <select class="form-control selectpicker" name="sex">
-                        <option value="0" selected>男</option>
-                        <option value="1">女</option>
+                        <option value=0 selected>男</option>
+                        <option value=1>女</option>
                     </select>
                 </div>
             </div>
@@ -56,11 +56,11 @@
                 <label class="control-label">请选择您的年龄：</label>
                 <div class="form-group">
                     <select class="form-control selectpicker" name="age">
-                        <option value="1">18岁及以下</option>
-                        <option value="2" selected>19-30岁</option>
-                        <option value="3">31-40岁</option>
-                        <option value="4">41-50岁</option>
-                        <option value="5">50岁及以上</option>
+                        <option value=1>18岁及以下</option>
+                        <option value=2 selected>19-30岁</option>
+                        <option value=3>31-40岁</option>
+                        <option value=4>41-50岁</option>
+                        <option value=5>50岁及以上</option>
                     </select>
                 </div>
             </div>
