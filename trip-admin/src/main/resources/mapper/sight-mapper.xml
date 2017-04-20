@@ -6,30 +6,35 @@
         INSERT INTO t_sight(
         name, score, address, type, rank, play_time,phone,
          website, open_time, ticket, introduce, tips, imgs, sum,
-          user_score, user_sum, longitude, latitude
+          user_score, user_sum, longitude, latitude, sight_type
          ) VALUES (
         #{name}, #{score}, #{address}, #{type}, #{rank}, #{playTime},#{phone},
         #{website}, #{openTime}, #{ticket}, #{introduce}, #{tips}, #{imgs}, #{sum},
-        #{userScore}, #{userSum}, #{longitude}, #{latitude})
+        #{userScore}, #{userSum}, #{longitude}, #{latitude}, #{sightType})
     </insert>
 
     <select id="getSightByParam" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum, longitude, latitude
+         website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum,
+         longitude, latitude, sight_type
          FROM t_sight WHERE name = #{name}
     </select>
 
     <select id="getSights" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.Sight">
         SELECT id, name, score, address, type, rank, play_time,phone,
-        website, open_time, ticket, introduce, tips, imgs, sum, user_score, user_sum, longitude, latitude
-        FROM t_sight
-        <if test="start!=null and start!=''">
-            WHERE rank BETWEEN #{start} AND #{end}
-            ORDER BY rank
+        website, open_time, ticket, introduce, tips, imgs, sum, user_score,
+        user_sum, longitude, latitude, sight_type
+        FROM t_sight WHERE 1 = 1
+        <if test="sightType!=null and sightType!=''">
+            AND sight_type = #{sightType} ORDER by rank
+        </if>
+        <if test="length!=null and length!=''">
+            Limit #{offset},#{length}
         </if>
         <if test="id!=null and id!=''">
-            WHERE id >= #{id}
+            AND id >= #{id}
         </if>
+
 
     </select>
 
@@ -40,11 +45,19 @@
         user_score = #{userScore},
         user_sum = #{userSum},
         longitude = #{longitude},
-        latitude = #{latitude}
+        latitude = #{latitude},
+        sight_type = #{sightType}
         WHERE name = #{name}
     </update>
 
-    <select id="count" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM t_sight
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_sight WHERE 1 = 1
+        <if test="sightType!=null and sightType !=''">
+            AND sight_type = #{sightType}
+        </if>
+    </select>
+
+    <select id="getSightType" parameterType="java.util.HashMap" resultType="java.lang.String">
+        SELECT sight_type FROM t_sight WHERE name = #{name}
     </select>
 </mapper>

@@ -24,11 +24,21 @@
 			 position: fixed;
 			 top: 0;
 			 background-color: rgba(0,0,0,0.2);
+			 /*opacity:0.5;*/
 			 width: 100%;
 			 height: 7%;
 			 line-height: 100%;
 
 		 }
+		.icon-icon{
+			position: absolute;
+			top: 50%;
+			left: 2%;
+			transform: translateY(-50%);
+			/*opacity:0.5;*/
+			background-color: rgba(0,0,0,0);
+			font-size: 2em;
+		}
 
 	</style>
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=caR16D6gFwi9voPC3H32RlXrNShv4Fvn">
@@ -39,22 +49,20 @@
 
 <body>
 <div class="top_tiv_cover">
-	<%--<a href="JavaScript:history.go(-1);">--%>
-	<i class="iconfont icon-icon"><a href="JavaScript:history.go(-1);"></a></i>
-	<%--</a>--%>
+	<a href="${ctx}/trip-admin/sight?type=rank">
+		<i class="iconfont icon-icon"></i>
+	</a>
 </div>
 <input type="text" style="display: none" value="${sight.longitude}" id="longitude">
 <input type="text" style="display: none" value="${sight.latitude}" id="latitude">
 
 
-		<div class="btn-group">
-			<button id="bus" class="btn-primary">公交与地铁</button>
-			<button id="car">驾车</button>
-			<button id="walk">步行路线</button>
-		</div>
-
-
-<div id="container"></div>
+<div id="container" style="margin-top: 40px;"></div>
+<div class="btn-group">
+	<button id="bus" class="btn-primary">公交与地铁</button>
+	<button id="car">驾车</button>
+	<button id="walk">步行路线</button>
+</div>
 <div id="r-result"></div>
 <script type="text/javascript">
 

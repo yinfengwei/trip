@@ -1,5 +1,6 @@
 package com.yin.trip.admin.service;
 
+import com.yin.trip.admin.entity.Result;
 import com.yin.trip.admin.entity.User;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface UserService {
      * @param user
      * @return
      */
-    boolean insertUser(User user);
+    Result insertUser(User user);
 
     /**
      *  判断用户名与密码是否正确
@@ -31,6 +32,13 @@ public interface UserService {
      * @return
      */
     User getUserByUseName(String name);
+
+    /**
+     *  根据手机号码获取用户信息
+     * @param phone
+     * @return
+     */
+    User getUserByPhone(String phone);
 
     /**
      *  根据参数获取用户信息
@@ -73,5 +81,5 @@ public interface UserService {
      * @param user
      * @return
      */
-    boolean updateUser(User user);
+    Result updateUser(User user);
 }

@@ -8,7 +8,7 @@ public class User {
     private long id;
     private String userName;        //用户名
     private String password;        //密码
-    private int phone;              //手机号码
+    private String phone;              //手机号码
     private String type;            //用户类型
     private int age;                //年龄段
     private int sex;                //性别,0代表男，1代表女
@@ -38,11 +38,11 @@ public class User {
         this.password = password;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

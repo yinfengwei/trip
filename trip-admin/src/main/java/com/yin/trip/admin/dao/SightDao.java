@@ -36,10 +36,20 @@ public interface SightDao {
     void update(Sight sight);
 
     /**
-     *  景点总数
+     *  景点总数，根据类型，类型可为null
      * @return
      */
-    int count();
+    int count(Map<String,Object> map);
+
+
+    /**
+     *  景点名获取景点类型
+     * @param map
+     * @return
+     */
+    String getSightType(Map<String,Object> map);
+
+
 
 
 

@@ -197,7 +197,7 @@
                 </c:if>
             </label>
 
-            <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 5em;">
+            <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 3em;">
                 <c:if test="${not empty userName}">
                     注销登录
                 </c:if>

@@ -15,14 +15,38 @@
     <title>轻松出行</title>
 
     <jsp:include page="${ctx}/common/head.jsp"></jsp:include>
+    <style>
+        .top_tiv_cover{
+            position: fixed;
+            top: 0;
+            background-color: rgba(0,0,0,0.2);
+            width: 100%;
+            height: 7%;
+            line-height: 100%;
 
+        }
+        .icon-icon{
+            position: absolute;
+            top: 50%;
+            left: 2%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0);
+            font-size: 2.5em;
+        }
+    </style>
 
 </head>
 <body style="background-color: #E4B89B">
+<jsp:include page="${ctx}/common/error.jsp"></jsp:include>
+<div class="top_tiv_cover">
 
-<div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat">
-    <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
-    <form role="form" style="margin-top: 280px;" method="post" action="${ctx}/trip-admin/update">
+    <a href="${ctx}/trip-admin/login">
+        <i class="iconfont icon-icon"></i>
+    </a>
+</div>
+<div class="container" style="max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat">
+
+    <form role="form" style="margin-top: 280px;margin-bottom: 100px;" method="post" action="${ctx}/trip-admin/update">
 
         <input name="userName" id="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required>
         <br>

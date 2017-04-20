@@ -52,7 +52,7 @@ public class ClickTest extends BaseTest{
 
         List<String> userNames = clickService.getSimUserByName("mouse");
 
-        Map<String, List<String>> result = clickService.getClickChart("mouse");
+        Map<String, List<String>> result = clickService.getClickChart("mouse",userNames);
 
 //        System.out.print(result.size());
 

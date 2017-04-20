@@ -40,16 +40,26 @@ public class ScoreServiceImpl implements ScoreService{
 
         Map<String, Object> param = new HashMap<String, Object>();
 
-        param.put("userName", score.getUserName());
         param.put("sightName", score.getSightName());
+
+        //获取该景点的所有评分
+        List<Score> scores = scoreDao.getScore(param);
+
+        param.put("userName", score.getUserName());
 
         Sight sight = sightService.getSightByName(score.getSightName());
 
-        Score tempScore = scoreDao.getScore(param);
+        List<Score> tempScore = scoreDao.getScore(param);
 
+
+        int sum = 0;
+        //计算总得分
+        for(Score score1 : scores) {
+            sum += score1.getScore();
+        }
 
         //判断数据库中是否已经含有该记录
-        if (tempScore != null) {
+        if (tempScore.size() != 0) {
 
             logger.info("数据库中已经含有该类型记录，进行更新记录");
 
@@ -57,10 +67,13 @@ public class ScoreServiceImpl implements ScoreService{
 
             logger.info("更新数据成功");
 
-            //更新数据，除去原本的得分，重新添加得分
-            float newScore = (sight.getUserScore() * sight.getUserSum()
-                    - tempScore.getScore() + score.getScore())/sight.getUserSum();
-            sightService.updateScore(score.getSightName(),newScore, sight.getUserSum());
+            //更新数据，获取所有该景点的得分并重新覆盖
+
+
+            float newScore = (sum - tempScore.get(0).getScore() + score.getScore())/sight.getUserSum();
+
+            //保留为一位小数
+            sightService.updateScore(score.getSightName(),Float.parseFloat(String.format("%.1f",newScore)), sight.getUserSum());
 
             logger.info("更新景点平均评分数据成功");
 
@@ -77,9 +90,10 @@ public class ScoreServiceImpl implements ScoreService{
             }  else {
 
                 //更新数据，添加得分
-                float newScore = (sight.getUserScore() * sight.getUserSum()
-                        + score.getScore())/ (sight.getUserSum() + 1);
-                sightService.updateScore(score.getSightName(),newScore, sight.getUserSum() + 1);
+                float newScore = (sum + score.getScore())/ (sight.getUserSum() + 1);
+
+                //保留一位小数
+                sightService.updateScore(score.getSightName(),Float.parseFloat(String.format("%.1f",newScore)), sight.getUserSum() + 1);
                 logger.info("添加评分成功");
             }
         }
@@ -89,13 +103,13 @@ public class ScoreServiceImpl implements ScoreService{
      * 获取评分用户倒查表
      */
     @Override
-    public Map<String, List<String>> getScoreChart(String name ,int startScore, int endScore) {
+    public Map<String, List<String>> getScoreChart(String name ,List<String> usersName) {
 
         //获取相关的用户列表
         Map<String, Object> param = new HashMap<String, Object>();
 
         //倒排表需要分析的用户数据
-        List<String> usersName = getSimUserByName(name,startScore,endScore);
+//        List<String> usersName = getSimUserByName(name,startScore,endScore);
         usersName.add(name);
 
         param.put("usersName", usersName);
@@ -105,7 +119,7 @@ public class ScoreServiceImpl implements ScoreService{
 
         Map<String, List<String>> result = new HashMap<String, List<String>>();
 
-        List<String> users = new ArrayList<String>();
+
 
         //添加第一个物品-用户数据
 
@@ -127,8 +141,6 @@ public class ScoreServiceImpl implements ScoreService{
                 if (!tempUsers.contains(userName)) {
                     tempUsers.add(userName);
                 }
-
-
 
             } else {
 

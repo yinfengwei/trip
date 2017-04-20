@@ -17,11 +17,36 @@
 
     <jsp:include page="${ctx}/common/head.jsp"></jsp:include>
 
+    <style>
+        .top_tiv_cover{
+            position: fixed;
+            top: 0;
+            background-color: rgba(0,0,0,0.2);
+            width: 100%;
+            height: 7%;
+            line-height: 100%;
 
+        }
+        .icon-icon{
+            position: absolute;
+            top: 50%;
+            left: 2%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0);
+            font-size: 2.5em;
+        }
+    </style>
 </head>
 <body style="background-color: #E4B89B">
+
+    <div class="top_tiv_cover">
+
+        <a href="${ctx}/trip-admin/login">
+            <i class="iconfont icon-icon"></i>
+        </a>
+    </div>
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
-    <div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat">
+    <div class="container" style="margin-bottom: 100px;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat">
 
         <form role="form" style="margin-top: 280px;" method="post" action="${ctx}/trip-admin/insertUser">
 
@@ -34,7 +59,7 @@
             <div class="form-group">
                 <label class="control-label">请选择您的身份：</label>
                 <div class="form-group">
-                    <select class="form-control selectpicker" name="type">
+                    <select class="form-control selectpicker" name="type" >
                         <option value="student" selected>学生</option>
                         <option value="officer">上班族</option>
                         <option value="cityNewer">城市新人</option>

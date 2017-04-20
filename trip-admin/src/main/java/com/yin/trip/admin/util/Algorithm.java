@@ -2,6 +2,7 @@ package com.yin.trip.admin.util;
 
 
 import org.apache.log4j.spi.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +20,15 @@ public class Algorithm {
     private static Map<String,Integer> similarUser;     //用户相似度最后返回结果
     private static int userSum;                         //用户总数
 
+
+
     /**
      *  获取用户相似度
      *   userName 已经包含该用户
      * @param userNames
      * @return
      */
-    public static Map<String, Object> getSimilar(String userName,
+    public static Map<String, Double> getSimilar(String userName,
                                                  Map<String,Integer> userNames,
                                                  Map<String, List<String>> scoreChart,
                                                  Map<String, List<String>> clickChart,
@@ -68,36 +71,11 @@ public class Algorithm {
 
 
 
-//        //从评分倒排表填充数据
-//        Set<Map.Entry<String, List<String>>> entries = chart.entrySet();
-//
-//        for (Map.Entry<String, List<String>> entry : entries) {
-//
-//            List<String> tempList = entry.getValue();
-//
-//            //两个用户都有则进行填充
-//            for (i = 0; i < tempList.size() - 1; i++) {
-//                for (j = 1; j < tempList.size(); j++) {
-//                    int a = similarUser.get(tempList.get(i));
-//                    System.out.println(tempList.get(j));
-//                    int b = similarUser.get(tempList.get(j));
-//
-//
-//                    System.out.println("增加的坐标为:" + a + "," + b);
-//                    //获取用户名，然后map对应坐标
-//                    user[a][b] += 1;
-//                    user[b][a] += 1;
-//                    itemSum[a] += 1;
-//                    itemSum[b] += 1;
-//                }
-//            }
-//        }
-
         //计算余弦得分
         calculate();
 
         //返回结果
-        Map<String, Object> similar = new HashMap<String, Object>();
+        Map<String, Double> similar = new HashMap<String, Double>();
 
         for (String name : userNames.keySet()) {
             //相似用户不包括该用户本身
@@ -128,9 +106,9 @@ public class Algorithm {
 
                 //两个用户都有则进行填充
                 for (int i = 0; i < tempList.size() - 1; i++) {
-                    for (int j = 1; j < tempList.size(); j++) {
+                    for (int j = i + 1; j < tempList.size(); j++) {
                         int a = similarUser.get(tempList.get(i));
-                        System.out.println(tempList.get(j));
+                        System.out.println(tempList.get(i) + " " + tempList.get(j));
                         int b = similarUser.get(tempList.get(j));
 
 
@@ -143,7 +121,7 @@ public class Algorithm {
                     }
                 }
             }
-//            display();
+            display();
         }
     }
 
@@ -162,7 +140,7 @@ public class Algorithm {
                 //用户列表进行辅助添加
                 for(String tempUser : tempList) {
                     int a = similarUser.get(key);
-                    System.out.println("tempUser" + tempUser);
+                    System.out.println("tempUser :" + tempUser);
                     int b = similarUser.get(tempUser);
 
 
@@ -175,7 +153,7 @@ public class Algorithm {
                 }
             }
 
-//            display();
+            display();
         }
     }
 
@@ -208,7 +186,7 @@ public class Algorithm {
 //                user[0][j] = user[0][j]/Math.sqrt(itemSum[0] * itemSum[j]);
                 System.out.print(user[i][j] + " ");
             }
-            System.out.println( "  =" + itemSum[0]);
+            System.out.println( "  =" + itemSum[i]);
        }
     }
 

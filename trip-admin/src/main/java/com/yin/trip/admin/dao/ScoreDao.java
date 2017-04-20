@@ -21,7 +21,9 @@ public interface ScoreDao {
      * @param param
      * @return
      */
-    Score getScore(Map<String, Object> param);
+    List<Score> getScore(Map<String, Object> param);
+
+
 
     /**
      *  更新评分记录

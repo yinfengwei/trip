@@ -25,6 +25,7 @@ public class Sight {
     private long userSum;           //用户评分总数
     private String longitude;           //经度
     private String latitude;           //纬度
+    private String sightType;           //景点再分类
 
     public int getId() {
         return id;
@@ -176,5 +177,13 @@ public class Sight {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public String getSightType() {
+        return sightType;
+    }
+
+    public void setSightType(String sightType) {
+        this.sightType = sightType;
     }
 }

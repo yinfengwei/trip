@@ -1,5 +1,6 @@
 package com.yin.trip.admin.controller;
 
+import com.yin.trip.admin.entity.Result;
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
 import org.slf4j.Logger;
@@ -32,14 +33,15 @@ public class ForgetPasswordController {
     @RequestMapping("/update")
     public String update(User user, ModelMap map) {
 
+        Result result = userService.updateUser(user);
 
-        if (userService.updateUser(user)){
+        if (result.isResult()){
             map.addAttribute("info","更新成功");
             logger.info("更新成功");
 
             return "login";
         } else {
-            map.addAttribute("error", "更新失败，请检查输入信息");
+            map.addAttribute("error", result.getMessage());
             logger.warn("更新失败");
             return "forget";
         }

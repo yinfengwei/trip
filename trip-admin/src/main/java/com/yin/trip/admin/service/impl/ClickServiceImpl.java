@@ -41,13 +41,13 @@ public class ClickServiceImpl implements ClickService{
      * @param name
      */
     @Override
-    public Map<String, List<String>> getClickChart(String name) {
+    public Map<String, List<String>> getClickChart(String name, List<String> usersName) {
 
         //获取相关的用户列表
         Map<String, Object> param = new HashMap<String, Object>();
 
         //倒排表需要分析的用户数据
-        List<String> usersName = getSimUserByName(name);
+//        List<String> usersName = getSimUserByName(name);
         usersName.add(name);
 
         param.put("usersName", usersName);
@@ -57,7 +57,6 @@ public class ClickServiceImpl implements ClickService{
 
         Map<String, List<String>> result = new HashMap<String, List<String>>();
 
-        List<String> users = new ArrayList<String>();
 
         //添加第一个物品-用户数据
 

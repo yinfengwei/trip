@@ -22,7 +22,7 @@ public interface ScoreService {
      *
      *
      */
-    Map<String, List<String>> getScoreChart(String name,int startScore, int endScore);
+    Map<String, List<String>> getScoreChart(String name,List<String> usersName);
 
     /**
      *  根据参数获取数据

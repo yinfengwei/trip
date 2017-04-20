@@ -22,13 +22,10 @@ public class MainController {
         map.addAttribute("error", error);
 
 
-        if(session.getAttribute("userName") == null) {
-            return "login";
-        }else {
+        if(session.getAttribute("userName") != null) {
             map.addAttribute("userName", session.getAttribute("userName") );
-            return "main";
         }
 
-
+        return "main";
     }
 }

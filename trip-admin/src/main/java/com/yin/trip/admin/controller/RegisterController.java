@@ -1,5 +1,6 @@
 package com.yin.trip.admin.controller;
 
+import com.yin.trip.admin.entity.Result;
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
 import org.slf4j.Logger;
@@ -32,8 +33,10 @@ public class RegisterController {
     @RequestMapping("/insertUser")
     public String insertUser(User user, ModelMap map) {
 
+
+        Result result = userService.insertUser(user);
         //插入成功
-        if (userService.insertUser(user)) {
+        if (result.isResult()) {
             logger.info("用户注册成功");
 
             map.addAttribute("info", "注册成功");
@@ -41,7 +44,7 @@ public class RegisterController {
         } else {
             logger.warn("用户注册失败");
 
-            map.put("error","注册失败");
+            map.put("error",result.getMessage());
             return "register";
         }
 

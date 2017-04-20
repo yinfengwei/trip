@@ -2,6 +2,7 @@ package com.yin.trip.admin;
 
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
+import com.yin.trip.common.util.PhoneFormatCheckUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ public class UserTest {
         user = new User();
         user.setUserName("test");
         user.setPassword("123456");
-        user.setPhone(123456);
+        user.setPhone("13728722483");
         user.setType("student");
         user.setAge(1);
         user.setSex(0);
@@ -41,7 +42,8 @@ public class UserTest {
 
     @Test
     public void testInsertUser() {
-        assert true == userService.insertUser(user);
+        System.out.println(userService.getUserByPhone(user.getPhone()));
+        assert true == userService.insertUser(user).isResult();
 
     }
 
@@ -109,5 +111,14 @@ public class UserTest {
 //        logger.info("result : "  +  result.size());
 
         System.out.println(result.get("yin"));
+    }
+
+    @Test
+    public void testPhoneFormat(){
+
+        String phone = "13534535271";
+
+
+        assert PhoneFormatCheckUtil.isPhoneLegal(phone);
     }
 }

@@ -13,6 +13,11 @@
         WHERE user_name = #{userName}
     </select>
 
+    <select id="getUserByPhone" parameterType="java.lang.String" resultType="com.yin.trip.admin.entity.User">
+        SELECT id, user_name, password, phone, type, age, sex FROM t_user
+        WHERE phone = #{phone}
+    </select>
+
     <select id="getUserList" parameterType="java.util.Map" resultType="com.yin.trip.admin.entity.User">
         SELECT id, user_name, password, phone, type, age, sex FROM t_user
         WHERE 1=1

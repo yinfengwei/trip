@@ -19,22 +19,21 @@ public interface SightService {
     void insertData(Sight sight);
 
     /**
-     *   获取景点列表
-     *
+     *   根据类型获取景点列表中的某一部分
+     *  @param offset 从0 开始
+     *  @param length
+     *  @param sightType
      */
-    List<Sight> getSights(int start, int end);
+    List<Sight> getSights(int offset, int length, String sightType);
 
-//    /**
-//     *   获取景点列表
-//     *
-//     */
-//    List<Sight> getSightsById(int id);
 
     /**
      *   获取景点列表
      *
      */
-    List<Sight> getSights();
+    List<Sight> getSights(String sightType);
+
+
 
     /**
      *  根据景点名获取景点信息
@@ -68,11 +67,20 @@ public interface SightService {
     int getCount();
 
     /**
+     *  获取景点类型总数
+     * @param sightType
+     * @return
+     */
+    int getCountBySightType(String sightType);
+
+    /**
      *  推荐景点
      */
-    List<Map.Entry<Sight, Double>> getRecommend(String userName, Map<String, Double> locationScore);
+    List<Map.Entry<Sight, Double>> getRecommend(String userName, Map<String, Double> locationScore ,String sightType);
 
-    Map<String, Object> getSimilar(String userName);
+     Map<String,Double> getTopSimilar (Map<String,Double> similar , int num);
+
+    Map<String, Double> getSimilar(String userName);
 
     /**
      *  获取景点与当前位置的距离并排序
@@ -90,5 +98,11 @@ public interface SightService {
     Map<String,Double> getDistanceScore(List<Distance> distances);
 
 
-
+    /**
+     *  判断景点是否属于景点类型
+     * @param name
+     * @param sightType
+     * @return
+     */
+    boolean belongSightType(String name, String sightType);
 }

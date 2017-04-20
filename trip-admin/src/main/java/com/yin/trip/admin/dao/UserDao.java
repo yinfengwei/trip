@@ -25,6 +25,13 @@ public interface UserDao {
     User getUserByName(String name);
 
     /**
+     *  根据手机号码查找用户
+     * @param phone
+     * @return
+     */
+    User getUserByPhone(String phone);
+
+    /**
      *  根据条件查找用户
      * @param param
      * @return

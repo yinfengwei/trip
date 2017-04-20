@@ -40,7 +40,7 @@ public class ScoreTest extends BaseTest{
 
         List<String> userNames = scoreService.getSimUserByName("mouse",3,5);
 
-        Map<String, List<String>> result = scoreService.getScoreChart("mouse",3,5);
+        Map<String, List<String>> result = scoreService.getScoreChart("mouse",userNames);
 
 //        System.out.print(result.size());
 

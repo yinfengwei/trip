@@ -1,8 +1,10 @@
 package com.yin.trip.admin.service.impl;
 
 import com.yin.trip.admin.dao.UserDao;
+import com.yin.trip.admin.entity.Result;
 import com.yin.trip.admin.entity.User;
 import com.yin.trip.admin.service.UserService;
+import com.yin.trip.common.util.PhoneFormatCheckUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,33 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public boolean insertUser(User user) {
+    public Result insertUser(User user) {
+
+        Result result = new Result();
 
         //数据库中已经存在则不能插入
         if (userDao.getUserByName(user.getUserName()) != null) {
             logger.warn("数据库中已经存在则不能插入");
-            return false;
+            result.setResult(false);
+            result.setMessage("数据库中已经存在则不能插入");
+            return result;
+        }
+
+        //判断手机号码格式是否准确
+        if(!PhoneFormatCheckUtil.isPhoneLegal(user.getPhone())){
+            logger.warn("手机号码格式不正确");
+            result.setResult(false);
+            result.setMessage("手机号码格式不正确");
+            return result;
+        }
+
+        //判断手机号码是否已经存在
+        if(userDao.getUserByPhone(user.getPhone()) != null){
+
+            logger.warn("手机号码已经注册过账号");
+            result.setResult(false);
+            result.setMessage("手机号码已经注册过账号");
+            return result;
         }
 
         //新建用户
@@ -48,9 +71,17 @@ public class UserServiceImpl implements UserService {
 
         //若为空则插入失败
         if (tempUser == null) {
-            return false;
+            logger.warn("数据库插入数据操作失败");
+            result.setResult(false);
+            result.setMessage("数据库插入数据操作失败");
+
+            return result;
         } else {
-            return true;
+            logger.warn("数据库插入数据操作成功");
+            result.setResult(true);
+            result.setMessage("数据库插入数据成功");
+
+            return result;
         }
 
     }
@@ -88,6 +119,17 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 根据手机号码获取用户信息
+     *
+     * @param phone
+     * @return
+     */
+    @Override
+    public User getUserByPhone(String phone) {
+        return userDao.getUserByPhone(phone);
+    }
+
+    /**
      * 根据参数获取用户信息
      *
      * @param param
@@ -121,7 +163,7 @@ public class UserServiceImpl implements UserService {
 
             for(User tempUser : getUserList(param)) {
 
-                //不能包含该用户且必须在用户列表中
+                //该用户的相关用户必须在用户列表中且不能为该用户
                 if ((!key.equals(tempUser.getUserName()))
                         && similarUser.containsKey(tempUser.getUserName())){
                     userList.add(tempUser.getUserName());
@@ -278,17 +320,32 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public boolean updateUser(User user) {
+    public Result updateUser(User user) {
 
-        User user1 = getUserByUseName(user.getUserName());
+        Result result = new Result();
 
-        //判断手机号码与数据库是否一致
-        if (user1 == null || user1.getPhone() != user.getPhone()) {
-            return false;
+        //根据用户名获取用户
+        User originalUser  = getUserByUseName(user.getUserName());
+
+
+        //判断用户名是否存在
+        if(originalUser == null) {
+            result.setResult(false);
+            result.setMessage("用户名不存在");
+            logger.warn("用户名不存在");
+
+        } else if (!originalUser.getPhone().equals(user.getPhone())) {
+            result.setResult(false);
+            result.setMessage("手机号码与用户名不匹配");
+            logger.warn("手机号码与用户名不匹配");
+
         } else {
-            userDao.updateUser(user);
-            return true;
+
+            result.setResult(true);
+            logger.warn("更新密码成功");
         }
+
+        return result;
 
     }
 }

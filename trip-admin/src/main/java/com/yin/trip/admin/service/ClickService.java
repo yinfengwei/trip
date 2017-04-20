@@ -22,7 +22,7 @@ public interface ClickService {
      *
      *
      */
-    Map<String, List<String>> getClickChart(String name);
+    Map<String, List<String>> getClickChart(String name,List<String> usersName);
 
     /**
      *  通过用户名获取与该用户去过同个景点的用户列表

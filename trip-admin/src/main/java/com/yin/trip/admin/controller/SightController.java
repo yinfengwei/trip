@@ -48,13 +48,17 @@ public class SightController {
 
     @RequestMapping
     public String page(String info, String error,String type, ModelMap modelMap,
-                       String page, HttpSession session) {
+                       String page, String sightType, HttpSession session) {
 
         modelMap.addAttribute("info", info);
-
         modelMap.addAttribute("error", error);
 
-
+        //如果第一次进入或者景点类型有变化
+        if (sightType != null) {
+            session.setAttribute("sightType", sightType);
+        } else {
+            sightType = (String)session.getAttribute("sightType");
+        }
 
         Map<String, String> distanceMap = (Map<String, String>)session.getAttribute("distanceMap");
 
@@ -66,13 +70,14 @@ public class SightController {
         }
 
         //访客模式不支持综合推荐,采用景点排名
-        if(type.equals("rank") || (session.getAttribute("userName") == null && type.equals("recommend"))) {
+        if(type.equals("rank") || (session.getAttribute("userName") == null
+                && type.equals("recommend"))) {
 
             //推荐类型
             modelMap.addAttribute("type", "rank");
 
             //查到的总用户数
-            int sum = sightService.getCount();
+            int sum = sightService.getCountBySightType(sightType);
             int pageSize = 15;//默认为20
 
             modelMap.addAttribute("sum", sum);
@@ -95,8 +100,8 @@ public class SightController {
             //每页开始的第几条记录
             int startRow = (Integer.parseInt(page) - 1) * pageSize;
 
-            //排名不能为0
-            List<Sight> list = sightService.getSights(startRow + 1, startRow + pageSize);
+            //参数为偏移跟长度
+            List<Sight> list = sightService.getSights(startRow, pageSize, sightType);
 
             modelMap.addAttribute("list", list);
             modelMap.addAttribute("currentPage", Integer.parseInt(page));
@@ -110,9 +115,10 @@ public class SightController {
             //页面初始的时候page没有值,获取推荐列表
             if (null == page) {
                 page = "1";
+            }
                 //推荐
                 Map<String, Double> locationScore = (Map<String, Double>)session.getAttribute("locationScore");
-                List<Map.Entry<Sight, Double>> recommendSight = sightService.getRecommend(userName, locationScore);
+                List<Map.Entry<Sight, Double>> recommendSight = sightService.getRecommend(userName, locationScore, sightType);
 
                 recommend = new ArrayList<String>();
 
@@ -123,11 +129,11 @@ public class SightController {
                 }
 
 
-                session.setAttribute("recommend", recommend);
-            } else {
-
-                recommend = (ArrayList<String>)session.getAttribute("recommend");
-            }
+//                session.setAttribute("recommend", recommend);
+//            } else {
+//
+//                recommend = (ArrayList<String>)session.getAttribute("recommend");
+//            }
 
             //查到的总用户数
             int sum = recommend.size();
@@ -166,7 +172,17 @@ public class SightController {
             modelMap.addAttribute("type", type);
 
             //获取景点从近到远
-            List<Distance> result = (List<Distance>)session.getAttribute("distance");
+            List<Distance> distances = (List<Distance>)session.getAttribute("distance");
+
+            List<Distance> result = new ArrayList<Distance>();
+
+            //添加符合景点类型的数据
+            for(Distance distance : distances) {
+                if (distance.getSight().getSightType().equals(sightType)) {
+                    result.add(distance);
+                }
+            }
+
 
             //查到的总用户数
             int sum = result.size();
@@ -210,19 +226,6 @@ public class SightController {
 
 
 
-    @ResponseBody
-    @RequestMapping("/appendSight")
-    public List<Sight> appendSight(String currentPage) {
-
-        System.out.print(currentPage);
-        int page = Integer.parseInt(currentPage);
-
-        //每页开始的第几条记录
-        int startRow = (page - 1) * 10;
-
-        return sightService.getSights(startRow + 1, startRow + 10);
-
-    }
 
     @RequestMapping("/view")
     public String viewSight(String name, ModelMap modelMap, HttpSession session){

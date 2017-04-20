@@ -21,7 +21,7 @@
 <body style="background-color: #E4B89B">
 
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
-    <div class="container" style="margin: auto;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
+    <div class="container" style="margin-bottom: 150px;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
 
         <form role="form" style="margin-top: 280px;" method="post" action="${ctx}/trip-admin/check">
 
@@ -36,9 +36,15 @@
         <br>
         <div>
             <p style="font-size: 18px;float: right">不想登录
-                <a href="${ctx}/trip-admin/sight?type=rank" style="font-size: 18px;text-align: center;">随便瞧瞧</a>
+                <a href="${ctx}/trip-admin/main" style="font-size: 18px;text-align: center;">随便瞧瞧</a>
             </p>
         </div>
+        <div>
+            <p style="font-size: 14px;float: right;color: steelblue">Tips:
+                <span style="font-size: 14px;text-align: center;">点击左下方图标退出登录重新定位</span>
+            </p>
+        </div>
+
     </div>
 
 </body>
