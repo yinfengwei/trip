@@ -406,13 +406,13 @@ public class SightServiceImpl implements SightService{
                 }
             }
 
-            //矩阵显示
-            for (i = 0; i < num; i++) {
-                for (j = 0; j < 3; j++) {
-                    System.out.print(userList[i][j] + " ");
-                }
-                System.out.println();
-            }
+//            //矩阵显示
+//            for (i = 0; i < num; i++) {
+//                for (j = 0; j < 3; j++) {
+//                    System.out.print(userList[i][j] + " ");
+//                }
+//                System.out.println();
+//            }
 
 
             //计算相似度,最后一个是原来的用户不需要计算

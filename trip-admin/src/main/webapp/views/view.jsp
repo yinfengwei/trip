@@ -204,9 +204,16 @@
 	</c:if>
 </div>
 <div class="top_tiv_cover">
-	<a href="${ctx}/trip-admin/sight?type=rank">
+	<c:if test="${not empty userName}">
+	<a href="${ctx}/trip-admin/sight?type=recommend">
 		<i class="iconfont icon-icon"></i>
 	</a>
+	</c:if>
+	<c:if test="${empty userName}">
+		<a href="${ctx}/trip-admin/sight?type=rank">
+			<i class="iconfont icon-icon"></i>
+		</a>
+	</c:if>
 </div>
 
 		<div class="panel panel-info wrapper">
@@ -420,10 +427,10 @@
 							//如果大于60分钟则按照小时计算
 							if(time > 60) {
 								time = Math.round(time / 60 * 10)/10;
-								$('.taxi_time').html("<i class='iconfont icon-chuzuche'></i>" + time + "小时");
+								$('.taxi_time').html("<i class='iconfont icon-chuzuche'></i>  " + time + "小时");
 							}else {
 								time = Math.round(time);
-								$('.taxi_time').html("<i class='iconfont icon-chuzuche'></i>" + time + "分钟");
+								$('.taxi_time').html("<i class='iconfont icon-chuzuche'></i>  " + time + "分钟");
 							}
 
 						}
@@ -436,10 +443,10 @@
 							//如果大于60分钟则按照小时计算
 							if(time > 60) {
 								time = Math.round(time / 60 * 10)/10;
-								$('.walk_time').html("<i class='iconfont icon-buxing'></i>" + time + "小时");
+								$('.walk_time').html("<i class='iconfont icon-buxing'></i>  " + time + "小时");
 							}else {
 								time = Math.round(time);
-								$('.walk_time').html("<i class='iconfont icon-buxing'></i>" + time + "分钟");
+								$('.walk_time').html("<i class='iconfont icon-buxing'></i>  " + time + "分钟");
 							}
 
 //							$('.walk_time').html("<i class='iconfont icon-buxing'></i>" + time + "分钟");
@@ -458,10 +465,10 @@
 							//如果大于60分钟则按照小时计算
 							if(time > 60) {
 								time = Math.round(time / 60 * 10)/10;
-								$('.bus_time').html("<i class='iconfont icon-gongjiaoche'></i>" + time + "小时");
+								$('.bus_time').html("<i class='iconfont icon-gongjiaoche'></i>  " + time + "小时");
 							}else {
 								time = Math.round(time);
-								$('.bus_time').html("<i class='iconfont icon-gongjiaoche'></i>" + time + "分钟");
+								$('.bus_time').html("<i class='iconfont icon-gongjiaoche'></i>  " + time + "分钟");
 							}
 //							$('.bus_time').html("<i class='iconfont icon-gongjiaoche'></i>" + time + "分钟");
 						}

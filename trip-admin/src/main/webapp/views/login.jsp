@@ -23,9 +23,9 @@
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
     <div class="container" style="margin-bottom: 150px;max-width: 340px;background: url('${ctx}/trip-admin/resource/img/background.png') no-repeat" >
 
-        <form role="form" style="margin-top: 280px;" method="post" action="${ctx}/trip-admin/check">
+        <form role="form" style="margin-top: 270px;" method="post" action="${ctx}/trip-admin/check">
 
-            <input name="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required>
+            <input name="userName" class="form-control" type="text" style="font-size: 18px;height: 40px;"placeholder="用户名" required value="${userName}">
             <a href="${ctx}/trip-admin/register" style="font-size: 18px;float: right">注册账号</a>
             <br>
             <input name="password" class="form-control" type="password" style="font-size: 18px;height: 40px;"placeholder="密码" required>
@@ -40,8 +40,8 @@
             </p>
         </div>
         <div>
-            <p style="font-size: 14px;float: right;color: steelblue">Tips:
-                <span style="font-size: 14px;text-align: center;">点击左下方图标退出登录重新定位</span>
+            <p style="font-size: 17px;float: right;color: white">Tips:
+                <span style="font-size: 17px;text-align: center;">点击左下方图标退出登录重新定位</span>
             </p>
         </div>
 

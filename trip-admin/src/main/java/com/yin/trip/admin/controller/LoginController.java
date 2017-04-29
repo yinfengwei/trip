@@ -105,6 +105,7 @@ public class LoginController {
         } else {
 
             map.addAttribute("error", "用户不存在或者密码不正确");
+            map.addAttribute("userName", userName);
             logger.warn("用户不存在或者密码不正确");
             return "login";
         }

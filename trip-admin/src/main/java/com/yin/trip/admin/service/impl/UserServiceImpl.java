@@ -341,6 +341,7 @@ public class UserServiceImpl implements UserService {
 
         } else {
 
+            userDao.updateUser(user);
             result.setResult(true);
             logger.warn("更新密码成功");
         }

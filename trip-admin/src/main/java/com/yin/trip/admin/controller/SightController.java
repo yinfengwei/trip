@@ -234,8 +234,6 @@ public class SightController {
         Sight sessionSight = (Sight)session.getAttribute("sight");
 
 
-
-
         //如果为访客模式则不记录
         if (session.getAttribute("userName") != null) {
 
@@ -340,10 +338,15 @@ public class SightController {
     }
 
     @RequestMapping("/go")
-    public String goSight(String name, ModelMap modelMap) {
+    public String goSight(String name, ModelMap modelMap, HttpSession session) {
 
         Sight sight = sightService.getSightByName(name);
         modelMap.put("sight", sight);
+
+        //是否登录
+        if (session.getAttribute("userName") != null) {
+            modelMap.addAttribute("userName", session.getAttribute("userName").toString());
+        }
 
 
         return "/go";

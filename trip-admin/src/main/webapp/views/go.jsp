@@ -17,7 +17,7 @@
 		html{height:100%}
 		body{height:100%;margin:0px;padding:0px}
 		#container{height:300px;width:100%;}
-		#r-result,#r-result table{width:100%;font-size:12px;}
+		#r-result,#r-result table{width:100%;font-size:12px;pointer-events:none; }
 		.btn-group { width: 100%; border-top: 1px solid #DDD; border-bottom: 2px solid #DDD;}
 		button {width: 32.5%; text-align: center; border: 0; border-radius: 0; background-color: inherit; height: 44px; line-height: 44px; font-size: 15px;}
 		 .top_tiv_cover{
@@ -49,9 +49,16 @@
 
 <body>
 <div class="top_tiv_cover">
-	<a href="${ctx}/trip-admin/sight?type=rank">
-		<i class="iconfont icon-icon"></i>
-	</a>
+	<c:if test="${not empty userName}">
+		<a href="${ctx}/trip-admin/sight?type=recommend">
+			<i class="iconfont icon-icon"></i>
+		</a>
+	</c:if>
+	<c:if test="${empty userName}">
+		<a href="${ctx}/trip-admin/sight?type=rank">
+			<i class="iconfont icon-icon"></i>
+		</a>
+	</c:if>
 </div>
 <input type="text" style="display: none" value="${sight.longitude}" id="longitude">
 <input type="text" style="display: none" value="${sight.latitude}" id="latitude">
@@ -134,6 +141,7 @@
 		map.addControl(top_left_navigation);
 
 		var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
+
 		driving.search(p1,p2);
 
 
