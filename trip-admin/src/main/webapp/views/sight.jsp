@@ -196,12 +196,16 @@
                     访客模式
                 </c:if>
             </label>
-
-            <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 3em;">
-                <c:if test="${not empty userName}">
+            <c:if test="${not empty userName}">
+                <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 3em;">
                     注销登录
-                </c:if>
-            </a>
+                </a>
+            </c:if>
+            <c:if test="${empty userName}">
+                <a href="${ctx}/trip-admin/login" style="float: right;font-size: 16px;">
+                    登录
+                </a>
+            </c:if>
 
         </div>
 

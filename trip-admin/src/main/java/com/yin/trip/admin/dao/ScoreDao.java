@@ -23,6 +23,13 @@ public interface ScoreDao {
      */
     List<Score> getScore(Map<String, Object> param);
 
+    /**
+     *  根据条件获取评论记录
+     * @param param
+     * @return
+     */
+    List<Score> getScoreWithComment(Map<String, Object> param);
+
 
 
     /**

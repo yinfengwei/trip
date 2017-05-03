@@ -234,6 +234,19 @@ public class SightController {
         Sight sessionSight = (Sight)session.getAttribute("sight");
 
 
+        //获取相关评论
+        Map<String, Object> param = new HashMap<String, Object>();
+
+        param.put("sightName", name);
+
+        List<Score> comments = scoreService.getScoreListWithComment(param);
+
+        if (comments.size() > 0) {
+            modelMap.addAttribute("comments", comments);
+        }
+
+
+
         //如果为访客模式则不记录
         if (session.getAttribute("userName") != null) {
 
@@ -260,6 +273,8 @@ public class SightController {
                 modelMap.addAttribute("userName", userName);
 
                 logger.info("记录点击数据成功");
+
+
             }
         }
 
@@ -307,6 +322,119 @@ public class SightController {
 
             return success;
         }
+
+    }
+
+//    @RequestMapping("/comment")
+//    @ResponseBody
+//    public String comment(String comment, HttpSession session){
+//
+//        //判断操作是否成功
+//        String success = "";
+//
+//        try {
+//            if (session.getAttribute("userName") == null) {
+//                success = "2";
+//                logger.info("插入评论失败: 用户未登录");
+//            } else {
+//
+//                Sight sight = (Sight)session.getAttribute("sight");
+//
+//                String userName = session.getAttribute("userName").toString();
+//
+//
+//                //判断用户是否已经评分
+//                Map<String, Object> param = new HashMap<String, Object>();
+//
+//                param.put("userName", userName);
+//                param.put("sightName", sight.getName());
+//
+//
+//                List<Score> scores = scoreService.getScoreList(param);
+//                logger.info("获取数据为" + scores);
+//                logger.info("获取数据大小为" + scores.size());
+//
+//                if (scores == null || scores.size() == 0) {
+//                    success = "3";
+//                    logger.info("插入评论失败: 用户未进行评分");
+//                } else {
+//                    success = "1";
+//
+//                    Score tempScore = scores.get(0);
+//
+//                    tempScore.setComment(comment);
+//
+//                    scoreService.update(tempScore);
+//                    logger.info("插入用户评分记录成功");
+//                }
+//            }
+//
+//            return success;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "4";
+//        }
+//
+//    }
+
+    @RequestMapping("/comment")
+    public String comment(String comment,ModelMap modelMap,  HttpSession session){
+
+        Sight sight = (Sight)session.getAttribute("sight");
+
+
+        if (session.getAttribute("userName") == null) {
+
+            modelMap.put("error","请先登录再进行评论");
+
+            logger.info("插入评论失败: 用户未登录");
+
+        } else {
+
+            String userName = session.getAttribute("userName").toString();
+
+            //判断用户是否已经评分
+            Map<String, Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("userName", userName);
+            paramMap.put("sightName", sight.getName());
+
+            List<Score> scores = scoreService.getScoreList(paramMap);
+            logger.info("获取数据为" + scores);
+            logger.info("获取数据大小为" + scores.size());
+
+            if (scores.size() == 0) {
+
+                modelMap.put("error","请先评分再进行评论");
+                logger.info("插入评论失败: 用户未进行评分");
+
+            } else {
+
+                Score tempScore = scores.get(0);
+
+                tempScore.setComment(comment);
+
+                scoreService.update(tempScore);
+                modelMap.put("info","评论成功");
+
+                logger.info("插入用户评分记录成功");
+
+            }
+        }
+
+        //获取相关评论
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("sightName", sight.getName());
+        param.put("offset",0);
+        param.put("length",5);
+
+        List<Score> comments = scoreService.getScoreListWithComment(param);
+
+        if (comments.size() > 0) {
+            modelMap.addAttribute("comments", comments);
+        }
+
+        return "view";
 
     }
 

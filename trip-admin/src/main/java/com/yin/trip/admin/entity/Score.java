@@ -15,6 +15,7 @@ public class Score {
     private String sightType;       //景点类型
     private int score;              //用户评分
     private Date time;              //评分时间
+    private String comment;         //评论
 
     public long getId() {
         return id;
@@ -70,5 +71,13 @@ public class Score {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

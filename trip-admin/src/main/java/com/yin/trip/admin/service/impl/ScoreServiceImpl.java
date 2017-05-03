@@ -170,6 +170,26 @@ public class ScoreServiceImpl implements ScoreService{
     }
 
     /**
+     * 根据参数获取评论数据
+     *
+     * @param param
+     */
+    @Override
+    public List<Score> getScoreListWithComment(Map<String, Object> param) {
+        return scoreDao.getScoreWithComment(param);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param score
+     */
+    @Override
+    public void update(Score score) {
+        scoreDao.updateScore(score);
+    }
+
+    /**
      * 通过用户名获取与该用户去过同个景点的用户列表,且满足评分限制，[startScore, endScore]
      *
      * @param userName

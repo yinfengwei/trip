@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -34,6 +31,7 @@ public class ScoreServiceImplTest extends BaseTest{
         score.setSightType("主题公园");
         score.setTime(new Date());
         score.setScore(4);
+        score.setComment("asd");
 
         scoreService.insertScore(score);
     }
@@ -73,4 +71,59 @@ public class ScoreServiceImplTest extends BaseTest{
         logger.info(userNames.size() + "");
     }
 
+    @Test
+    public void getScoreListWithComment() throws Exception {
+        Score score = new Score();
+
+        score.setUserName("yin");
+        score.setUserType("student");
+        score.setSightName("世界之窗");
+        score.setSightType("主题公园");
+        score.setTime(new Date());
+        score.setScore(4);
+        score.setComment("asd");
+
+        scoreService.insertScore(score);
+        score.setUserName("yin1");
+        score.setComment("ABC");
+        scoreService.insertScore(score);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+//        param.put("userName", "yin");
+        param.put("sightName", "世界之窗");
+        param.put("offset",1);
+        param.put("length",1);
+
+        if(scoreService.getScoreListWithComment(param)!= null) {
+            logger.info(scoreService.getScoreListWithComment(param).get(0).getComment());
+            logger.info(scoreService.getScoreListWithComment(param).size() + "");
+        }
+
+    }
+
+    @Test
+    public void update() throws Exception {
+        Score score = new Score();
+
+        score.setUserName("yin");
+        score.setUserType("student");
+        score.setSightName("世界之窗");
+        score.setSightType("主题公园");
+        score.setTime(new Date());
+        score.setScore(4);
+        score.setComment("asd");
+
+        scoreService.insertScore(score);
+
+        score.setComment("abc");
+        scoreService.update(score);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("userName", "yin");
+        param.put("sightName", "世界之窗");
+
+        if(scoreService.getScoreListWithComment(param)!= null) {
+            logger.info(scoreService.getScoreListWithComment(param).get(0).getComment());
+        }
+    }
 }

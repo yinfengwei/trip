@@ -30,6 +30,17 @@ public interface ScoreService {
     List<Score> getScoreList(Map<String, Object> param);
 
     /**
+     *  根据参数获取评论数据
+     */
+    List<Score> getScoreListWithComment(Map<String, Object> param);
+
+    /**
+     *  更新数据
+     * @param score
+     */
+    void update(Score score);
+
+    /**
      *  通过用户名获取与该用户去过同个景点的用户列表且满足评分限制，[startScore, endScore]
      * @param userName
      * @return

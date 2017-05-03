@@ -122,6 +122,19 @@
             color: white;
 
         }
+		.comment_img_div{
+			margin-right: 20px;
+			float: left;
+			font-size: 1.5em;
+		}
+		.comment_user{
+
+			float: left;
+			font-size: 1.5em;
+		}
+		.user_comment{
+			clear: both;
+		}
 
 
 
@@ -130,6 +143,7 @@
 
 </head>
 <body>
+<jsp:include page="${ctx}/common/error.jsp"></jsp:include>
 <div id="img_div">
     <img id="place_img"  src="${sight.imgs}" onerror="javascript:this.src='${ctx}/trip-admin/resource/img/error.jpg'" alt="图片">
 </div>
@@ -232,27 +246,13 @@
 				</ul>
 			</div>
 		</div>
-		<%--<div class="wrapper">--%>
-			<%--<p>景点评分 : </p>--%>
-			<%--<p style="font-size: small">tips:等级为“很差”、“差”、“一般”、“好”、“很好”</p>--%>
-			<%--<p>您的评分为 : <span id="result"></span>--%>
-				<%--<ul id="star">--%>
-					<%--<li>★</li>--%>
-					<%--<li>★</li>--%>
-					<%--<li>★</li>--%>
-					<%--<li>★</li>--%>
-					<%--<li>★</li>--%>
-				<%--</ul>--%>
-		<%--</div>--%>
-		<%--<hr>--%>
-		<%--<br>--%>
+
+
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<h3 class="panel-title">景点相关信息</h3>
 			</div>
 			<div class="panel-body">
-
-
 				<c:if test="${sight.userSum != 0}">
 					<span id="userSum">评论人数 :${sight.userSum}人</span>
 					<br>
@@ -316,9 +316,46 @@
 			<%--<br>--%>
 		</c:if>
 
+		<c:if test="${not empty comments}">
+			<div class="panel panel-info wrapper">
+				<div class="panel-heading">
+					<h3 class="panel-title">用户评论</h3>
+				</div>
+				<div class="panel-body">
+					<c:forEach items="${comments}" var="tempComment" varStatus="status">
+						<div>
+							<div class="comment_img_div">
+								<img class="comment_img"  src="${ctx}/trip-admin/resource/img/comment.png" alt="图片">
+							</div>
+							<div class="comment_user">
+								<p style="font-size: 14px;">用户 : ${tempComment.userName} </p>
+								<p style="font-size: 14px;">评分 : ${tempComment.score}分</p>
+							</div>
+						</div>
+						<div class="user_comment">
+							<p style="width: 100%;font-size: 16px;">${tempComment.comment}</p>
+						</div>
+						<c:if test="${!status.last}">
+							<hr>
+						</c:if>
+					</c:forEach>
+				</div>
+			</div>
+		</c:if>
+		<div class="panel panel-info wrapper">
+			<div class="panel-heading">
+				<h3 class="panel-title">您的评论</h3>
+			</div>
+			<div class="panel-body">
+				<textarea id="comment" style="width: 100%;height: 100px;font-size: 18px;"></textarea>
+			</div>
+			<button id="commentButton" class="btn btn-info" style="margin-left: 80%;">评论</button>
+		</div>
+
 	</div>
 	<input type="text" id="longitude" style="display: none" value="${sight.longitude}">
 	<input type="text" id="latitude" style="display: none" value="${sight.latitude}">
+
 </div>
 
 </body>
@@ -330,6 +367,9 @@
 
 
 	$(function(){
+
+
+
 		var star = document.getElementById("star");
 		var star_li = star.getElementsByTagName("li");
 		var result = document.getElementById("result");
@@ -355,7 +395,7 @@
 					dataType: "json",
 					success: function(data) {
 						if (data == '1') {
-//							alert("评分成功");
+							alert("评分成功");
 							result.innerHTML = score + "分";
 							for(j = 0; j <= len; j++){
 								if (j <= score - 1) {
@@ -479,5 +519,44 @@
 			}
 		});
 	}
+
+	$('#commentButton').click(function () {
+		var comment = $('#comment').val().trim();
+
+		if(comment == "") {
+			alert("评论不能为空");
+		}else {
+			window.location.href = "${ctx}/trip-admin/sight/comment?comment=" + comment;
+//			alert(comment);
+
+			<%--$.ajax({--%>
+				<%--type: "POST",--%>
+				<%--url: "${ctx}/trip-admin/sight/comment",--%>
+				<%--data:  {--%>
+					<%--"comment" : comment--%>
+				<%--},--%>
+				<%--dataType: "json",--%>
+				<%--success: function(data) {--%>
+					<%--console.info(data);--%>
+					<%--if (data == '1') {--%>
+						<%--alert("评论成功");--%>
+						<%--$('#comment').attr("disabled","disabled");--%>
+						<%--$('#commentButton').css({ "display": "none" });--%>
+
+					<%--} else {--%>
+						<%--$('#comment').val("");--%>
+						<%--if (data == "2") {--%>
+							<%--alert("请先登录再进行评论");--%>
+						<%--}else if(data =="3") {--%>
+							<%--alert("请先评分再进行评论");--%>
+						<%--}else {--%>
+							<%--alert("评论失败，请重新评论");--%>
+						<%--}--%>
+					<%--}--%>
+
+				<%--}--%>
+			<%--});--%>
+		}
+	})
 </script>
 </html>

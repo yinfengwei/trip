@@ -73,16 +73,7 @@
 </head>
 <body style="background-color: rgb(240,239,244);height: 100%;width: 100%">
 
-
     <jsp:include page="${ctx}/common/error.jsp"></jsp:include>
-    <c:if test="${empty userName}">
-        <div class="top_tiv_cover">
-
-            <a href="${ctx}/trip-admin/login">
-                <i class="iconfont icon-icon"></i>
-            </a>
-        </div>
-    </c:if>
     <div style="margin-top: 20px;margin-left: 10px;margin-right: 10px;">
 
         <label style="float: left;font-size: 16px;">用户 ：
@@ -96,6 +87,11 @@
         <c:if test="${not empty userName}">
             <a href="${ctx}/trip-admin/loginOut" style="float: right;font-size: 16px;">
                 注销登录
+            </a>
+        </c:if>
+        <c:if test="${empty userName}">
+            <a href="${ctx}/trip-admin/login" style="float: right;font-size: 16px;">
+                登录
             </a>
         </c:if>
 
