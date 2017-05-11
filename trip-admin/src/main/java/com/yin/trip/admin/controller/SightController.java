@@ -238,6 +238,8 @@ public class SightController {
         Map<String, Object> param = new HashMap<String, Object>();
 
         param.put("sightName", name);
+        param.put("offset",0);
+        param.put("length",5);
 
         List<Score> comments = scoreService.getScoreListWithComment(param);
 
@@ -250,6 +252,18 @@ public class SightController {
         //如果为访客模式则不记录
         if (session.getAttribute("userName") != null) {
 
+            String userName = session.getAttribute("userName").toString();
+
+            //判断用户是否已经评分
+
+            param.put("userName", userName);
+
+            List<Score> scores = scoreService.getScoreList(param);
+
+            if (scores.size() != 0) {
+                modelMap.put("score",scores.get(0).getScore());
+            }
+
             //判断是否重复进行点击
             if (sessionSight != null && sight.getName().equals(sessionSight.getName())) {
 
@@ -257,7 +271,7 @@ public class SightController {
 
             } else {
 
-                String userName = session.getAttribute("userName").toString();
+
                 //插入点击记录
                 Click click = new Click();
 
@@ -297,10 +311,25 @@ public class SightController {
         try {
             Sight sight = (Sight)session.getAttribute("sight");
 
+            String userName = session.getAttribute("userName").toString();
+
             //插入点击记录
             Score insertScore = new Score();
 
-            String userName = session.getAttribute("userName").toString();
+            //判断是否已经存在评分数据，存在则进行更新操作
+            //判断用户是否已经评分
+            Map<String, Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("userName", userName);
+            paramMap.put("sightName", sight.getName());
+
+            List<Score> scores = scoreService.getScoreList(paramMap);
+
+            if (scores.size() != 0) {
+                //复制评论
+                insertScore.setComment(scores.get(0).getComment());
+            }
+
+
 
             insertScore.setUserName(userName);
             //根据用户名查找用户类型
@@ -416,6 +445,7 @@ public class SightController {
 
                 scoreService.update(tempScore);
                 modelMap.put("info","评论成功");
+                modelMap.put("score",tempScore.getScore());
 
                 logger.info("插入用户评分记录成功");
 

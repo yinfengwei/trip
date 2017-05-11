@@ -355,6 +355,7 @@
 	</div>
 	<input type="text" id="longitude" style="display: none" value="${sight.longitude}">
 	<input type="text" id="latitude" style="display: none" value="${sight.latitude}">
+	<input type="text" id="score" style="display: none" value="${score}">
 
 </div>
 
@@ -368,14 +369,15 @@
 
 	$(function(){
 
-
-
+//		var score = $('#score').val();
 		var star = document.getElementById("star");
 		var star_li = star.getElementsByTagName("li");
 		var result = document.getElementById("result");
 		var i = 0;
 		var j = 0;
 		var len = star_li.length;
+
+//		alert(score);
 
 
 		for(i = 0; i < len; i++){
